@@ -1,32 +1,51 @@
 GEREKSİNİMLERİM 
 
 1)Kullanıcı Giriş İşlevi
+
 Sistem, belediye personelinin kullanıcı adı ve şifre ile güvenli şekilde sisteme giriş yapmasını sağlamalıdır.
 Bu gereksinim, yetkisiz erişimleri engellemek ve kullanıcı bazlı işlem takibi yapmak amacıyla gereklidir.
+
 2) Rol Bazlı Yetkilendirme
+
 Sistem, kullanıcıları “Departman Personeli” ve “Bilişim Personeli (Admin)” olarak ayırmalıdır.
 Her kullanıcı yalnızca kendi yetki seviyesine uygun işlemleri gerçekleştirebilmelidir.
+
 3) Arıza Kaydı Oluşturma
+
 Departman personeli, sahip olduğu elektronik cihaz için yeni bir arıza kaydı oluşturabilmelidir.
 Arıza kaydı; cihaz adı, cihaz türü, arıza açıklaması ve öncelik seviyesi bilgilerini içermelidir.
+
 4) Fotoğraf Yükleme İşlevi
+
 Kullanıcı, arızalı cihaza ait fotoğrafı sisteme yükleyebilmelidir.
 Bu özellik, bilişim personelinin sorunu daha hızlı analiz etmesini sağlamak amacıyla eklenmiştir.
+
 5) Arıza Durum Yönetimi
+
 Sistem, her arıza kaydı için bir durum bilgisi tutmalıdır (Beklemede, İnceleniyor, Tamir Edildi, Reddedildi).
 Bilişim personeli bu durumları güncelleyebilmelidir.
+
 6) Arıza Listeleme ve Filtreleme
+
 Sistem, arıza kayıtlarını departmana, tarihe ve duruma göre listeleyebilmeli ve filtreleyebilmelidir.
 Bu özellik, arıza kayıtlarının düzenli ve hızlı yönetilmesini sağlar.
+
 7) Arıza Güncelleme ve Not Ekleme
+
 Bilişim personeli, arıza kaydına teknik açıklama veya çözüm notu ekleyebilmelidir.
 Bu notlar, sürecin şeffaf şekilde takip edilmesini sağlar.
+
 8) Arıza Geçmişi Görüntüleme
+
 Departman personeli, daha önce oluşturduğu arıza kayıtlarını ve bu kayıtların geçmiş durum değişikliklerini görüntüleyebilmelidir.
 Bu gereksinim, kullanıcıların süreç hakkında bilgi sahibi olmasını sağlar.
-9) Bildirim Mekanizması
+
+9) Bildirim Mekanizması,
+
 Arıza kaydının durumu değiştiğinde ilgili departman personeline sistem içi bildirim gönderilmelidir.
 Bu özellik, kullanıcıların süreci aktif olarak takip etmesini kolaylaştırır.
+
 10) Raporlama ve İstatistik Görüntüleme
+
 Bilişim personeli, sistemdeki arızalara ilişkin istatistiksel verileri görüntüleyebilmelidir.
 Örneğin; toplam arıza sayısı, açık arıza sayısı ve en sık arıza veren cihaz türü gibi bilgiler raporlanabilmelidir.
