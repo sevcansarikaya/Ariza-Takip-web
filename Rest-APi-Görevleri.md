@@ -1,4 +1,4 @@
-# 🚀 Arıza Takip Sistemi REST API Metotları
+#  Arıza Takip Sistemi REST API Metotları
 
 > **API Test Videosu:** [Link buraya eklenecek]
 
@@ -17,7 +17,8 @@
   "firstName": "Sevcan",
   "lastName": "Sarıkaya",
   "role": "DEPARTMAN"
-}```
+}
+```
 
 **Response:** `201 Created – Kullanıcı başarıyla oluşturuldu`
 
@@ -33,6 +34,7 @@
   "email": "kullanici@belediye.com",
   "password": "Guvenli123!"
 }
+```
 
 **Response:** `200 OK – Giriş başarılı (JWT Token döner)`
 
@@ -65,6 +67,7 @@
   "description": "Kağıt sıkışması sorunu var",
   "priority": "ORTA"
 }
+```
 ### 5) Arıza Listeleme
 
 **Endpoint:** `GET /faults`
@@ -89,16 +92,24 @@
 
 **Hata:** `404 Not Found` – Arıza kaydı bulunamadı
 
-7. Arıza Durumu Güncelleme
-Endpoint: PUT /faults/{faultId}
-Path Parameters:
-faultId (string, required)
-Authentication: Bearer Token gerekli (ADMIN / BİLİŞİM)
-Request Body:
+### 7) Arıza Durumu Güncelleme
+
+**Endpoint:** `PUT /faults/{faultId}`
+
+**Path Parameters:**
+* `faultId` (string, required)
+
+**Authentication:** `Bearer Token` gerekli (ADMIN / BİLİŞİM)
+
+**Request Body:**
+
+```json
 {
   "status": "INCELEMEDE",
   "solutionNote": "Parça sipariş edildi"
 }
+```
+
 **Response:** `200 OK – Arıza durumu güncellendi`
 **Hata:** `403 Forbidden – Yetkisiz işlem`
 
@@ -144,3 +155,4 @@ Request Body:
   "openFaults": 25,
   "closedFaults": 95
 }
+```
