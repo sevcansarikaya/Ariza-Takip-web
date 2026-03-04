@@ -1,0 +1,229 @@
+## API Tasarımı - OpenAPI Specification
+
+OpenAPI Spesifikasyon Dosyası:  
+📄 [lamine.yaml](./lamine.yaml)
+
+Bu doküman, OpenAPI Specification (OAS) 3.0 standardına göre hazırlanmış örnek bir API tasarımını içermektedir.
+
+OpenAPI Specification
+
+openapi: 3.0.3
+
+info:
+  title: Belediye Arıza Takip Sistemi API
+  description: |
+    Belediye departmanları ve bilişim birimi için geliştirilmiş
+    RESTful Arıza Takip Sistemi API dokümanıdır.
+
+    ## Özellikler
+    - Kullanıcı giriş sistemi (JWT)
+    - Rol bazlı yetkilendirme (Departman / Admin)
+    - Arıza kaydı oluşturma
+    - Fotoğraf yükleme
+    - Durum yönetimi
+    - Bildirim sistemi
+    - Raporlama ve istatistik
+
+  version: 1.0.0
+  contact:
+    name: API Destek Ekibi
+    email: destek@belediye.com
+
+servers:
+  - url: http://localhost:8080/api
+    description: Local Server
+
+tags:
+  - name: Auth
+  - name: Users
+  - name: Faults
+  - name: Notifications
+  - name: Reports
+
+paths:
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Kullanıcı giriş işlemi
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        "200":
+          description: Giriş başarılı
+        "401":
+          description: Yetkisiz erişim
+
+  /faults:
+    post:
+      tags: [Faults]
+      summary: Yeni arıza kaydı oluşturma
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FaultRequest'
+      responses:
+        "201":
+          description: Arıza kaydı oluşturuldu
+
+    get:
+      tags: [Faults]
+      summary: Arıza listeleme ve filtreleme
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+        - in: query
+          name: department
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Arıza listesi getirildi
+
+  /faults/{id}:
+    get:
+      tags: [Faults]
+      summary: Arıza detay görüntüleme
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Arıza detayı
+
+    put:
+      tags: [Faults]
+      summary: Arıza durum güncelleme ve not ekleme
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FaultUpdateRequest'
+      responses:
+        "200":
+          description: Güncelleme başarılı
+
+  /faults/{id}/upload-photo:
+    post:
+      tags: [Faults]
+      summary: Arızaya fotoğraf yükleme
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: Fotoğraf yüklendi
+
+  /notifications:
+    get:
+      tags: [Notifications]
+      summary: Kullanıcı bildirimlerini listeleme
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Bildirim listesi getirildi
+
+  /reports:
+    get:
+      tags: [Reports]
+      summary: Arıza istatistik raporlarını görüntüleme
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Rapor verileri getirildi
+
+components:
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          example: personel@belediye.com
+        password:
+          type: string
+          example: Guvenli123!
+
+    FaultRequest:
+      type: object
+      required:
+        - deviceName
+        - deviceType
+        - description
+        - priority
+      properties:
+        deviceName:
+          type: string
+          example: HP Yazıcı
+        deviceType:
+          type: string
+          example: Yazici
+        description:
+          type: string
+          example: Kağıt sıkışması mevcut
+        priority:
+          type: string
+          enum: [Dusuk, Orta, Yuksek]
+
+    FaultUpdateRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [Beklemede, Inceleniyor, TamirEdildi, Reddedildi]
+        solutionNote:
+          type: string
+          example: Parça değiştirildi
