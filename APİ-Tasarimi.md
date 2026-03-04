@@ -1,4 +1,4 @@
-## 📝 API Tasarımı - OpenAPI Specification
+##  API Tasarımı - OpenAPI Specification
 
 **OpenAPI Spesifikasyon Dosyası:** 📄 [lamine.yaml](./lamine.yaml)
 
@@ -6,7 +6,7 @@ Bu doküman, **OpenAPI Specification (OAS) 3.0** standardına göre hazırlanmı
 
 ---
 
-### ⚙️ OpenAPI Specification (YAML)
+###  OpenAPI Specification (YAML)
 
 ```yaml
 openapi: 3.0.3

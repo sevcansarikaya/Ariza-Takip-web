@@ -85,19 +85,58 @@
 
 **Hata:** `404 Not Found` – Arıza kaydı bulunamadı
 
-### 7) Arıza Durumu Güncelleme
+7. Arıza Durumu Güncelleme
+Endpoint: PUT /faults/{faultId}
+Path Parameters:
+faultId (string, required)
+Authentication: Bearer Token gerekli (ADMIN / BİLİŞİM)
+Request Body:
+{
+  "status": "INCELEMEDE",
+  "solutionNote": "Parça sipariş edildi"
+}
+**Response:** `200 OK – Arıza durumu güncellendi`
+**Hata:** `403 Forbidden – Yetkisiz işlem`
 
-**Endpoint:** `PUT /faults/{faultId}`
+### 8) Arızaya Fotoğraf Yükleme
+
+**Endpoint:** `POST /faults/{faultId}/upload-photo`
 
 **Path Parameters:**
 * `faultId` (string, required)
 
-**Authentication:** `Bearer Token` gerekli (ADMIN / BİLİŞİM)
+**Authentication:** `Bearer Token` gerekli
 
-**Request Body:**
+**Request Type:** `multipart/form-data`
+
+**Body:**
+* `file` (image, required)
+
+**Response:** `200 OK` – Fotoğraf başarıyla yüklendi
+### 9) Arıza Silme
+
+**Endpoint:** `DELETE /faults/{faultId}`
+
+**Path Parameters:**
+* `faultId` (string, required)
+
+**Authentication:** `Bearer Token` gerekli (ADMIN)
+
+**Response:** `200 OK` – Arıza kaydı silindi
+
+**Hata:** `404 Not Found` – Kayıt bulunamadı
+
+### 10) Raporlama (İstatistik)
+
+**Endpoint:** `GET /reports`
+
+**Authentication:** `Bearer Token` gerekli (ADMIN)
+
+**Response Body:**
 
 ```json
 {
-  "status": "INCELEMEDE",
-  "solutionNote": "Parça sipariş edildi"
+  "totalFaults": 120,
+  "openFaults": 25,
+  "closedFaults": 95
 }
