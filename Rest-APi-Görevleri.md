@@ -7,14 +7,14 @@ API Test Videosu: Link buraya eklenecek
 
 Endpoint: POST /auth/register
 Request Body:
-'
+
 {
   "email": "kullanici@belediye.com",
   "password": "Guvenli123!",
   "firstName": "Sevcan",
   "lastName": "Sarıkaya",
   "role": "DEPARTMAN"
-}'
+}
 
 Response: 201 Created – Kullanıcı başarıyla oluşturuldu
 Hata: 400 Bad Request – Geçersiz veri
