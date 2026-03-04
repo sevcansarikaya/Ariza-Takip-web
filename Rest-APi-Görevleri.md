@@ -18,7 +18,9 @@
   "lastName": "Sarıkaya",
   "role": "DEPARTMAN"
 }```
+
 **Response:** `201 Created – Kullanıcı başarıyla oluşturuldu`
+
 **Hata:** `400 Bad Request – Geçersiz veri`
 
 ## 2) Giriş Yapma
@@ -31,7 +33,9 @@
   "email": "kullanici@belediye.com",
   "password": "Guvenli123!"
 }
+
 **Response:** `200 OK – Giriş başarılı (JWT Token döner)`
+
 **Hata:** `401 Unauthorized – Email veya şifre hatalı`
 
 ### 3) Kullanıcı Bilgilerini Görüntüleme
