@@ -40,7 +40,7 @@ Bu notlar, sürecin şeffaf şekilde takip edilmesini sağlar.
 Departman personeli, daha önce oluşturduğu arıza kayıtlarını ve bu kayıtların geçmiş durum değişikliklerini görüntüleyebilmelidir.
 Bu gereksinim, kullanıcıların süreç hakkında bilgi sahibi olmasını sağlar.
 
-9) Bildirim Mekanizması,
+9) Bildirim Mekanizması
 
 Arıza kaydının durumu değiştiğinde ilgili departman personeline sistem içi bildirim gönderilmelidir.
 Bu özellik, kullanıcıların süreci aktif olarak takip etmesini kolaylaştırır.
