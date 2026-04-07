@@ -30,6 +30,9 @@
             <input type="password" id="password" placeholder="Şifre" required>
             <input type="password" id="adminKey" placeholder="Belediye Yetkili Şifresi" style="display: none;">
             <button type="submit" class="main-btn">Giriş Yap</button>
+            <a href="register.html" style="margin-top: 15px; display: block; color: #ff7e5f; text-decoration: none; font-size: 0.9rem;">
+    Hesabınız yok mu? Kayıt Olun
+</a>
         </form>
         <p id="msg" style="color: red;"></p>
     </div>
@@ -43,7 +46,7 @@
             document.getElementById('adminKey').style.display = role === 'ADMIN' ? 'block' : 'none';
         }
 
-        
+
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 

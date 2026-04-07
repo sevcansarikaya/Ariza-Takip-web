@@ -53,6 +53,14 @@ app.post('/auth/login', (req, res) => {
     });
 });
 
+app.post('/faults', (req, res) => {
+    const { deviceName, deviceType, description, priority, userId } = req.body;
+    const sql = `INSERT INTO faults (deviceName, deviceType, description, priority, userId, status) VALUES (?, ?, ?, ?, ?, 'Beklemede')`;
+    db.run(sql, [deviceName, deviceType, description, priority, userId], function(err) {
+        if (err) return res.status(400).json({ error: "Kayıt oluşturulamadı." });
+        res.status(201).json({ message: "Arıza kaydı başarıyla oluşturuldu", faultId: this.lastID });
+    });
+});
 
 app.listen(PORT, () => {
     console.log(`Sunucu http://localhost:${PORT} adresinde aktif.`);
