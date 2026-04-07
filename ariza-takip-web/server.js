@@ -70,13 +70,7 @@ app.post('/faults', upload.single('faultImage'), (req, res) => {
     });
 });
 
-db.run("ALTER TABLE faults ADD COLUMN imageUrl TEXT", (err) => {
-    if (err) {
-        console.log("Sütun zaten var veya bir hata oluştu (normal olabilir):", err.message);
-    } else {
-        console.log("imageUrl sütunu başarıyla eklendi!");
-    }
-});
+
 app.listen(PORT, () => {
     console.log(`Sunucu http://localhost:${PORT} adresinde aktif.`);
 });
