@@ -1,0 +1,7 @@
+# Use this workspace to collaborate
+workspace:
+  id: f6c483fc-9da5-40ff-8deb-25a6478b7c77
+
+localResources:
+  specs:
+    - ../lamine.yaml
