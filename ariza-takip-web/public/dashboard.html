@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Arıza Takip Paneli</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <span id="welcomeText"></span>
+        <button onclick="logout()">Çıkış Yap</button>
+    </nav>
+
+    <div class="container">
+        <section id="createFaultSection" style="display: none;">
+            <h3>Yeni Arıza Kaydı Oluştur</h3>
+            <form id="faultForm">
+                <input type="text" id="deviceName" placeholder="Cihaz Adı (Örn: HP Yazıcı)" required>
+                <select id="deviceType">
+                    <option value="Bilgisayar">Bilgisayar</option>
+                    <option value="Yazici">Yazıcı</option>
+                    <option value="Ağ Cihazı">Ağ Cihazı</option>
+                </select>
+                <textarea id="description" placeholder="Arıza Açıklaması"></textarea>
+                <select id="priority">
+                    <option value="DÜŞÜK">Düşük</option>
+                    <option value="ORTA">Orta</option>
+                    <option value="YÜKSEK">Yüksek</option>
+                </select>
+                <button type="submit">Kaydı Gönder</button>
+            </form>
+        </section>
+
+        <section id="listSection">
+            <h3>Arıza Kayıtları</h3>
+            <div id="faultList">
+                </div>
+        </section>
+    </div>
+
+    <script>
+        const user = JSON.parse(localStorage.getItem('user'));
+
+        if (!user) {
+            window.location.href = 'index.html';
+        }
+
+        document.getElementById('welcomeText').innerText = `Hoş geldin, ${user.firstName} (${user.role})`;
+
+        // Gereksinim 2: Rol Bazlı Yetkilendirme (Sadece DEPARTMAN kayıt açabilir)
+        if (user.role === 'DEPARTMAN') {
+            document.getElementById('createFaultSection').style.display = 'block';
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

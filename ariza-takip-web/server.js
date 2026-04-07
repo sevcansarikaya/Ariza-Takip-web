@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const db = require('./database'); // Veritabanı bağlantısı
 require('dotenv').config();
-
+app.use(express.static('public'));
 const app = express();
 app.use(cors());
 app.use(express.json()); // JSON gövdelerini okumak için şart

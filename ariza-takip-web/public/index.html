@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Belediye Arıza Takip - Giriş</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="login-container">
+        <h2>Belediye Arıza Takip Sistemi</h2>
+        <form id="loginForm">
+            <input type="email" id="email" placeholder="E-posta" required>
+            <input type="password" id="password" placeholder="Şifre" required>
+            <button type="submit">Giriş Yap</button>
+        </form>
+        <p id="message"></p>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            const response = await fetch('/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                // Giriş başarılıysa kullanıcı bilgilerini tarayıcıya kaydet
+                localStorage.setItem('user', JSON.stringify(data.user));
+                alert('Giriş başarılı! Yönlendiriliyorsunuz...');
+                window.location.href = 'dashboard.html';
+            } else {
+                document.getElementById('message').innerText = data.error;
+            }
+        });
+    </script>
+</body>
+</html>
