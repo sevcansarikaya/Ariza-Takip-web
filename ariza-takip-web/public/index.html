@@ -38,35 +38,51 @@
     </div>
 
     <script>
-        let currentRole = 'DEPARTMAN';
-        function setRole(role) {
-            currentRole = role;
-            document.getElementById('btnP').classList.toggle('active', role === 'DEPARTMAN');
-            document.getElementById('btnY').classList.toggle('active', role === 'ADMIN');
-            document.getElementById('adminKey').style.display = role === 'ADMIN' ? 'block' : 'none';
-        }
+    let currentRole = 'DEPARTMAN';
+    
+    function setRole(role) {
+        currentRole = role;
+        document.getElementById('btnP').classList.toggle('active', role === 'DEPARTMAN');
+        document.getElementById('btnY').classList.toggle('active', role === 'ADMIN');
+        // Admin seçilince şifre kutusunu göster, personel seçilince gizle ve içeriğini temizle
+        const adminInput = document.getElementById('adminKey');
+        adminInput.style.display = role === 'ADMIN' ? 'block' : 'none';
+        if(role !== 'ADMIN') adminInput.value = ''; 
+    }
 
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const adminKey = document.getElementById('adminKey').value;
 
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const adminKey = document.getElementById('adminKey').value;
-
+        try {
             const res = await fetch('/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password, role: currentRole, adminKey })
+                body: JSON.stringify({ 
+                    email: email, 
+                    password: password, 
+                    role: currentRole, // DEPARTMAN veya ADMIN
+                    adminKey: adminKey 
+                })
             });
+
             const data = await res.json();
+
             if (res.ok) {
+                // DASHBOARD'un seni tanıması için burası HAYATİ ÖNEMDE
                 localStorage.setItem('user', JSON.stringify(data.user));
                 window.location.href = 'dashboard.html';
             } else {
-                document.getElementById('msg').innerText = data.error;
+                // Hatayı ekrana yazdır
+                document.getElementById('msg').innerText = data.error || "Giriş başarısız";
             }
-        });
+        } catch (err) {
+            document.getElementById('msg').innerText = "Sunucuya bağlanılamadı!";
+        }
+    });
     </script>
 </body>
 </html>
