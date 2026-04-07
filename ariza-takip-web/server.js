@@ -4,6 +4,12 @@ const db = require('./database');
 require('dotenv').config();
 
 const app = express();
+const multer = require('multer');
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => { cb(null, 'public/uploads/'); },
+    filename: (req, file, cb) => { cb(null, Date.now() + '-' + file.originalname); }
+});
+const upload = multer({ storage: storage });
 const PORT = process.env.PORT || 8080;
 
 app.use(cors());
@@ -53,15 +59,24 @@ app.post('/auth/login', (req, res) => {
     });
 });
 
-app.post('/faults', (req, res) => {
+app.post('/faults', upload.single('faultImage'), (req, res) => {
     const { deviceName, deviceType, description, priority, userId } = req.body;
-    const sql = `INSERT INTO faults (deviceName, deviceType, description, priority, userId, status) VALUES (?, ?, ?, ?, ?, 'Beklemede')`;
-    db.run(sql, [deviceName, deviceType, description, priority, userId], function(err) {
-        if (err) return res.status(400).json({ error: "Kayıt oluşturulamadı." });
-        res.status(201).json({ message: "Arıza kaydı başarıyla oluşturuldu", faultId: this.lastID });
+    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
+
+    const sql = `INSERT INTO faults (deviceName, deviceType, description, priority, userId, status, imageUrl) VALUES (?, ?, ?, ?, ?, 'Beklemede', ?)`;
+    db.run(sql, [deviceName, deviceType, description, priority, userId, imageUrl], function(err) {
+        if (err) return res.status(400).json({ error: "Kayıt hatası." });
+        res.status(201).json({ message: "Kayıt oluşturuldu" });
     });
 });
 
+db.run("ALTER TABLE faults ADD COLUMN imageUrl TEXT", (err) => {
+    if (err) {
+        console.log("Sütun zaten var veya bir hata oluştu (normal olabilir):", err.message);
+    } else {
+        console.log("imageUrl sütunu başarıyla eklendi!");
+    }
+});
 app.listen(PORT, () => {
     console.log(`Sunucu http://localhost:${PORT} adresinde aktif.`);
 });

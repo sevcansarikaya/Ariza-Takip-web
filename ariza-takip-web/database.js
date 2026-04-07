@@ -21,7 +21,8 @@ db.serialize(() => {
         priority TEXT,
         status TEXT DEFAULT 'Beklemede',
         userId INTEGER,
-        FOREIGN KEY(userId) REFERENCES users(id)
+        FOREIGN KEY(userId) REFERENCES users(id),
+        imageUrl TEXT
     )`);
 });
 
