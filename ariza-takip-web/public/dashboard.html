@@ -3,152 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Belediye Arıza Takip Paneli</title>
+    <title>Yönetici Paneli | Belediye Arıza Takip</title>
     <style>
-        :root { --orange: #ff7e5f; --dark: #2c3e50; --light: #f8f9fa; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--light); margin: 0; }
-        
-        /* Navbar */
-        nav { background: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .logo { font-weight: bold; color: var(--dark); font-size: 1.2rem; }
-        .user-pill { background: #eee; padding: 5px 15px; border-radius: 20px; font-size: 0.9rem; }
-        .logout-btn { color: #e74c3c; cursor: pointer; border: none; background: none; font-weight: bold; }
+        :root { --orange: #ff7e5f; --dark: #2c3e50; --light: #f4f7f6; --sidebar-w: 260px; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--light); margin: 0; display: flex; overflow-x: hidden; }
 
-        .container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
+        .sidebar { width: var(--sidebar-w); background: var(--dark); height: 100vh; color: white; position: fixed; z-index: 100; }
+        .sidebar-header { padding: 25px 20px; background: #1a252f; text-align: center; font-weight: bold; font-size: 1.1rem; border-bottom: 2px solid var(--orange); }
+        .menu-group-title { padding: 15px 20px 5px; font-size: 0.75rem; color: #7f8c8d; text-transform: uppercase; letter-spacing: 1px; }
+        .menu-item { padding: 12px 20px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; font-size: 0.95rem; }
+        .menu-item:hover { background: rgba(255,126,95, 0.2); color: var(--orange); }
+        .menu-item.active { background: var(--orange); color: white; }
 
-        /* Arıza Form Kartı */
-        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px; }
-        .card h3 { margin-top: 0; color: var(--dark); border-left: 5px solid var(--orange); padding-left: 10px; }
+        .main-content { flex: 1; margin-left: var(--sidebar-w); padding: 25px; min-height: 100vh; }
         
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        textarea { grid-column: span 2; height: 80px; }
-        .submit-btn { grid-column: span 2; background: var(--orange); color: white; border: none; padding: 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .top-nav { background: white; padding: 15px 25px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.02); margin-bottom: 25px; }
+        .user-profile { display: flex; align-items: center; gap: 15px; }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-bottom: 5px solid var(--orange); cursor: pointer; transition: 0.3s; }
+        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+        .stat-card h4 { margin: 0; color: #7f8c8d; font-size: 0.85rem; }
+        .stat-card .value { font-size: 2rem; font-weight: bold; color: var(--dark); margin-top: 8px; }
 
-        /* Liste Alanı */
-        .fault-list { display: grid; gap: 15px; }
-        .fault-item { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 6px solid #ccc; position: relative; }
-        .status-badge { position: absolute; top: 20px; right: 20px; padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; font-weight: bold; }
-        
-        /* Öncelik Renkleri */
-        .priority-YÜKSEK { border-left-color: #e74c3c; }
-        .priority-ORTA { border-left-color: #f1c40f; }
-        .priority-DÜŞÜK { border-left-color: #2ecc71; }
-        
-        .badge-beklemede { background: #ffeaa7; color: #d63031; }
-        .admin-controls { margin-top: 15px; padding-top: 15px; border-top: 1px dashed #eee; }
+        .fault-card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 15px; border-left: 8px solid #ddd; box-shadow: 0 2px 8px rgba(0,0,0,0.04); position: relative; }
+        .badge { position: absolute; top: 20px; right: 20px; padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; }
+        .badge-beklemede { background: #fff4e5; color: #ff8c00; }
+        .badge-tamir { background: #e8f5e9; color: #2e7d32; }
+
+        .logout-btn { background: #fff1f0; color: #cf1322; border: 1px solid #ffa39e; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .logout-btn:hover { background: #cf1322; color: white; }
     </style>
 </head>
 <body>
 
-<nav>
-    <div class="logo">🏢 Belediye Arıza Takip</div>
-    <div>
-        <span class="user-pill" id="userInfo">Yükleniyor...</span>
-        <button class="logout-btn" onclick="logout()">Çıkış</button>
-    </div>
-</nav>
-
-<div class="container">
-    <div id="personelForm" class="card" style="display: none;">
-        <h3>Yeni Arıza Bildirimi</h3>
-        <form id="faultForm">
-            <div class="form-grid">
-                <input type="text" id="deviceName" placeholder="Cihaz Adı (Örn: Yazıcı)" required>
-                <select id="deviceType">
-                    <option value="Bilgisayar">Bilgisayar</option>
-                    <option value="Yazıcı">Yazıcı</option>
-                    <option value="Ağ Cihazı">Ağ Cihazı</option>
-                </select>
-                <select id="priority">
-                    <option value="DÜŞÜK">Düşük Öncelik</option>
-                    <option value="ORTA" selected>Orta Öncelik</option>
-                    <option value="YÜKSEK">Yüksek Öncelik</option>
-                </select>
-                <textarea id="description" placeholder="Arıza detaylarını yazın..." required></textarea>
-                <button type="submit" class="submit-btn">ARIZA KAYDI OLUŞTUR</button>
-            </div>
-        </form>
-    </div>
-
-    <h3>📋 <span id="listTitle">Arıza Kayıtları</span></h3>
-    <div id="faultList" class="fault-list">
-        <p>Yükleniyor...</p>
-    </div>
-</div>
-
-<script>
-    const user = JSON.parse(localStorage.getItem('user'));
-    if (!user) window.location.href = 'index.html';
-
-    document.getElementById('userInfo').innerText = `${user.firstName} (${user.role})`;
-
-    // Rol Bazlı Arayüz (Gereksinim 2)
-    if (user.role === 'DEPARTMAN') {
-        document.getElementById('personelForm').style.display = 'block';
-        document.getElementById('listTitle').innerText = 'Arıza Geçmişim';
-    } else {
-        document.getElementById('listTitle').innerText = 'Tüm Departman Arızaları (Yönetici)';
-    }
-
-    function logout() {
-        localStorage.clear();
-        window.location.href = 'index.html';
-    }
-
-    // Arıza Kaydı Oluşturma
-    document.getElementById('faultForm')?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const data = {
-            deviceName: document.getElementById('deviceName').value,
-            deviceType: document.getElementById('deviceType').value,
-            description: document.getElementById('description').value,
-            priority: document.getElementById('priority').value,
-            userId: user.id
-        };
-
-        const res = await fetch('/faults', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
-
-        if (res.ok) {
-            alert('Kayıt oluşturuldu!');
-            location.reload();
-        }
-    });
-
-    // Listeleme (Gereksinim 6 & 8)
-    async function loadFaults() {
-        // Personel ise sadece kendi ID'sini, Admin ise hepsini çeker
-        const url = user.role === 'ADMIN' ? '/faults' : `/faults/user/${user.id}`;
-        const res = await fetch(url);
-        const faults = await res.json();
+    <div class="sidebar">
+        <div class="sidebar-header">🏢 BELEDİYE YÖNETİM</div>
+        <div class="menu-group-title">ANA MENÜ</div>
+        <div class="menu-item active" onclick="filterByStatus('Hepsi')">📊 Genel İstatistikler</div>
         
-        const listDiv = document.getElementById('faultList');
-        listDiv.innerHTML = faults.length === 0 ? '<p>Kayıt bulunamadı.</p>' : '';
+        <div class="menu-group-title">DEPARTMANLAR</div>
+        <div class="menu-item" onclick="filterByDept('Bilişim')">💻 Bilişim Hizmetleri</div>
+        <div class="menu-item" onclick="filterByDept('Ulaşım')">🚌 Ulaşım Daire</div>
+        <div class="menu-item" onclick="filterByDept('Fen İşleri')">🏗️ Fen İşleri</div>
+        <div class="menu-item" onclick="filterByDept('Temizlik')">🧹 Temizlik İşleri</div>
+    </div>
 
-        faults.forEach(f => {
-            const div = document.createElement('div');
-            div.className = `fault-item priority-${f.priority}`;
-            div.innerHTML = `
-                <span class="status-badge badge-beklemede">${f.status}</span>
-                <strong>${f.deviceName}</strong> <small>(${f.deviceType})</small>
-                <p>${f.description}</p>
-                <div style="font-size: 0.8rem; color: #666;">ID: #${f.id} | Öncelik: ${f.priority}</div>
-                ${user.role === 'ADMIN' ? `
-                    <div class="admin-controls">
-                        <button onclick="updateStatus(${f.id}, 'İnceleniyor')">⚙️ İncele</button>
-                        <button onclick="updateStatus(${f.id}, 'Tamir Edildi')">✅ Onar</button>
+    <div class="main-content">
+        <div class="top-nav">
+            <div class="logo-text">Yönetim Paneli > <strong id="navPath">Genel Bakış</strong></div>
+            <div class="user-profile">
+                <span id="userName" style="font-weight: 600;">...</span>
+                <button class="logout-btn" onclick="logout()">Çıkış Yap</button>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card" onclick="filterByStatus('Hepsi')">
+                <h4>Toplam Kayıt</h4>
+                <div class="value" id="totalCount">0</div>
+            </div>
+            <div class="stat-card" style="border-color: #f1c40f;" onclick="filterByStatus('Beklemede')">
+                <h4>Bekleyenler</h4>
+                <div class="value" id="pendingCount">0</div>
+            </div>
+            <div class="stat-card" style="border-color: #2ecc71;" onclick="filterByStatus('Tamir Edildi')">
+                <h4>Tamamlananlar</h4>
+                <div class="value" id="fixedCount">0</div>
+            </div>
+        </div>
+
+        <h3 id="listHeader">Tüm Arıza Kayıtları</h3>
+        <div id="faultList">
+            </div>
+    </div>
+
+    <script>
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user || user.role !== 'ADMIN') {
+            alert("Bu sayfaya erişim yetkiniz yok!");
+            window.location.href = 'index.html';
+        }
+
+        document.getElementById('userName').innerText = user.firstName + " " + (user.lastName || "");
+        
+        let allFaults = [];
+
+        async function loadData() {
+            const res = await fetch('/faults');
+            allFaults = await res.json();
+            updateStats();
+            renderFaults(allFaults);
+        }
+
+        function updateStats() {
+            document.getElementById('totalCount').innerText = allFaults.length;
+            document.getElementById('pendingCount').innerText = allFaults.filter(f => f.status === 'Beklemede').length;
+            document.getElementById('fixedCount').innerText = allFaults.filter(f => f.status === 'Tamir Edildi').length;
+        }
+
+        function renderFaults(data) {
+            const listDiv = document.getElementById('faultList');
+            listDiv.innerHTML = data.length === 0 ? '<div class="fault-card">Kayıt bulunamadı.</div>' : '';
+
+            data.forEach(f => {
+                const div = document.createElement('div');
+                div.className = 'fault-card';
+                div.style.borderLeftColor = f.priority === 'YÜKSEK' ? '#e74c3c' : (f.priority === 'ORTA' ? '#f1c40f' : '#2ecc71');
+                
+                div.innerHTML = `
+                    <span class="badge ${f.status === 'Beklemede' ? 'badge-beklemede' : 'badge-tamir'}">${f.status}</span>
+                    <strong style="font-size: 1.1rem; color: #2c3e50;">${f.deviceName}</strong> 
+                    <span style="color: #95a5a6; font-size: 0.8rem;">#${f.id}</span>
+                    <p style="color: #34495e; margin: 10px 0;">${f.description}</p>
+                    <div style="display: flex; gap: 15px; font-size: 0.8rem; color: #7f8c8d;">
+                        <span>📍 Departman: ${f.deviceType || 'Genel'}</span>
+                        <span>⚠️ Öncelik: ${f.priority}</span>
                     </div>
-                ` : ''}
-            `;
-            listDiv.appendChild(div);
-        });
-    }
+                `;
+                listDiv.appendChild(div);
+            });
+        }
 
-    loadFaults();
-</script>
+        function filterByStatus(status) {
+            document.getElementById('navPath').innerText = status === 'Hepsi' ? 'Genel Bakış' : status;
+            document.getElementById('listHeader').innerText = status + " Kayıtlar";
+            
+            if (status === 'Hepsi') {
+                renderFaults(allFaults);
+            } else {
+                renderFaults(allFaults.filter(f => f.status === status));
+            }
+        }
+
+        function filterByDept(dept) {
+            document.getElementById('navPath').innerText = dept;
+            document.getElementById('listHeader').innerText = dept + " Departmanı Arızaları";
+            const filtered = allFaults.filter(f => f.deviceType === dept);
+            renderFaults(filtered);
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
+
+        loadData();
+    </script>
 </body>
 </html>
