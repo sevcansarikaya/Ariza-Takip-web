@@ -4,14 +4,11 @@ const db = require('./database');
 require('dotenv').config();
 
 const app = express();
+const PORT = process.env.PORT || 8080;
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public'));
-
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/public/index.html');
-});
+app.use(express.static('public')); 
 
 app.post('/auth/register', (req, res) => {
     const { email, password, firstName, lastName, role } = req.body;
@@ -34,7 +31,7 @@ app.post('/auth/register', (req, res) => {
     });
 });
 
-// --- 2) GİRİŞ YAPMA (POST /auth/login) ---
+
 app.post('/auth/login', (req, res) => {
     const { email, password } = req.body;
 
@@ -50,8 +47,7 @@ app.post('/auth/login', (req, res) => {
         if (!user) {
             return res.status(401).json({ error: "Email veya şifre hatalı." });
         }
-        
-        // Şimdilik JWT olmadan basit bir başarı mesajı ve kullanıcı bilgisi dönüyoruz
+
         res.status(200).json({
             message: "Giriş başarılı",
             user: {
@@ -64,7 +60,7 @@ app.post('/auth/login', (req, res) => {
     });
 });
 
-// Sunucuyu başlat
+
 app.listen(PORT, () => {
-    console.log(`✅ Sunucu http://localhost:${PORT} adresinde aktif.`);
+    console.log(`Sunucu http://localhost:${PORT} adresinde aktif.`);
 });
