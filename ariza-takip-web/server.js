@@ -1,23 +1,18 @@
 const express = require('express');
 const cors = require('cors');
-const db = require('./database'); // Veritabanı bağlantısı
+const db = require('./database');
 require('dotenv').config();
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
 app.use(express.static('public'));
+
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
 });
-const app = express();
-app.use(cors());
-app.use(express.json()); // JSON gövdelerini okumak için şart
 
-const PORT = process.env.PORT || 8080;
-
-// --- TEST ROTASI ---
-app.get('/', (req, res) => {
-    res.send('Belediye Arıza Takip API Canlıda ve Çalışıyor! 🚀');
-});
-
-// --- 1) ÜYE OLMA (POST /auth/register) ---
 app.post('/auth/register', (req, res) => {
     const { email, password, firstName, lastName, role } = req.body;
 
