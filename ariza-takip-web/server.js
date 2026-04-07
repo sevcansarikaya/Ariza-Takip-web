@@ -33,29 +33,22 @@ app.post('/auth/register', (req, res) => {
 
 
 app.post('/auth/login', (req, res) => {
-    const { email, password } = req.body;
+    const { email, password, role, adminKey } = req.body;
 
-    if (!email || !password) {
-        return res.status(400).json({ error: "Email ve şifre gereklidir." });
+    if (role === 'ADMIN') {
+        if (adminKey !== 'BELEDIYE123') { 
+            return res.status(403).json({ error: "Yetkili giriş anahtarı hatalı!" });
+        }
     }
 
-    const sql = `SELECT * FROM users WHERE email = ? AND password = ?`;
-    db.get(sql, [email, password], (err, user) => {
-        if (err) {
-            return res.status(500).json({ error: "Sunucu hatası." });
-        }
-        if (!user) {
-            return res.status(401).json({ error: "Email veya şifre hatalı." });
-        }
-
+    const sql = `SELECT * FROM users WHERE email = ? AND password = ? AND role = ?`;
+    db.get(sql, [email, password, role], (err, user) => {
+        if (err) return res.status(500).json({ error: "Sunucu hatası." });
+        if (!user) return res.status(401).json({ error: "Giriş bilgileri veya yetki hatalı." });
+        
         res.status(200).json({
             message: "Giriş başarılı",
-            user: {
-                id: user.id,
-                email: user.email,
-                firstName: user.firstName,
-                role: user.role
-            }
+            user: { id: user.id, firstName: user.firstName, role: user.role }
         });
     });
 });

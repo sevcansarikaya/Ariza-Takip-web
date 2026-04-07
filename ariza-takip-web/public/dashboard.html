@@ -3,192 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arıza Takip Paneli</title>
+    <title>Belediye Arıza Takip Paneli</title>
     <style>
-        :root {
-            --primary-orange: #ff7e5f;
-            --dark-blue: #2c3e50;
-            --bg-light: #f8f9fa;
-        }
+        :root { --orange: #ff7e5f; --dark: #2c3e50; --light: #f8f9fa; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--light); margin: 0; }
+        
+        /* Navbar */
+        nav { background: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .logo { font-weight: bold; color: var(--dark); font-size: 1.2rem; }
+        .user-pill { background: #eee; padding: 5px 15px; border-radius: 20px; font-size: 0.9rem; }
+        .logout-btn { color: #e74c3c; cursor: pointer; border: none; background: none; font-weight: bold; }
 
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: var(--bg-light);
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
+        .container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
 
-        /* Üst Menü */
-        nav {
-            background: white;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
+        /* Arıza Form Kartı */
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px; }
+        .card h3 { margin-top: 0; color: var(--dark); border-left: 5px solid var(--orange); padding-left: 10px; }
+        
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        textarea { grid-column: span 2; height: 80px; }
+        .submit-btn { grid-column: span 2; background: var(--orange); color: white; border: none; padding: 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
-        .user-info { font-weight: bold; color: var(--dark-blue); }
-        .logout-btn {
-            background: #e74c3c;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .container {
-            padding: 30px;
-            max-width: 1200px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        /* Form Kartı */
-        .card {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            margin-bottom: 30px;
-            border-top: 5px solid var(--primary-orange);
-        }
-
-        h3 { color: var(--dark-blue); margin-top: 0; }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        input, select, textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-sizing: border-box;
-            margin-bottom: 10px;
-        }
-
-        textarea { grid-column: span 2; height: 100px; }
-
-        .submit-btn {
-            grid-column: span 2;
-            background: var(--primary-orange);
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .submit-btn:hover { background: #e66a4e; }
-
-        /* Arıza Kartları Listesi */
-        .fault-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .fault-card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            border-left: 8px solid #ddd;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-        }
-
-        .status-badge {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            float: right;
-        }
-
-        .status-beklemede { background: #ffeaa7; color: #d63031; }
+        /* Liste Alanı */
+        .fault-list { display: grid; gap: 15px; }
+        .fault-item { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 6px solid #ccc; position: relative; }
+        .status-badge { position: absolute; top: 20px; right: 20px; padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; font-weight: bold; }
+        
+        /* Öncelik Renkleri */
+        .priority-YÜKSEK { border-left-color: #e74c3c; }
+        .priority-ORTA { border-left-color: #f1c40f; }
+        .priority-DÜŞÜK { border-left-color: #2ecc71; }
+        
+        .badge-beklemede { background: #ffeaa7; color: #d63031; }
+        .admin-controls { margin-top: 15px; padding-top: 15px; border-top: 1px dashed #eee; }
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="user-info">🏢 Belediye Arıza Takip | <span id="userName">...</span></div>
-        <button class="logout-btn" onclick="logout()">Çıkış Yap</button>
-    </nav>
+<nav>
+    <div class="logo">🏢 Belediye Arıza Takip</div>
+    <div>
+        <span class="user-pill" id="userInfo">Yükleniyor...</span>
+        <button class="logout-btn" onclick="logout()">Çıkış</button>
+    </div>
+</nav>
 
-    <div class="container">
-        <div id="createFaultCard" class="card" style="display: none;">
-            <h3>🛠️ Yeni Arıza Bildirimi</h3>
-            <form id="faultForm">
-                <div class="form-grid">
-                    <input type="text" id="deviceName" placeholder="Cihaz Adı (Örn: Masaüstü PC)" required>
-                    <select id="deviceType">
-                        <option value="Bilgisayar">Bilgisayar</option>
-                        <option value="Yazıcı">Yazıcı</option>
-                        <option value="Ağ Cihazı">Ağ Cihazı</option>
-                        <option value="Diğer">Diğer</option>
-                    </select>
-                    <select id="priority">
-                        <option value="DÜŞÜK">Düşük Öncelik</option>
-                        <option value="ORTA" selected>Orta Öncelik</option>
-                        <option value="YÜKSEK">Yüksek Öncelik</option>
-                    </select>
-                    <textarea id="description" placeholder="Arıza detaylarını buraya yazın..." required></textarea>
-                    <button type="submit" class="submit-btn">ARIZA KAYDINI GÖNDER</button>
-                </div>
-            </form>
-        </div>
-
-        <h3>📋 Mevcut Arıza Kayıtları</h3>
-        <div id="faultList" class="fault-grid">
+<div class="container">
+    <div id="personelForm" class="card" style="display: none;">
+        <h3>Yeni Arıza Bildirimi</h3>
+        <form id="faultForm">
+            <div class="form-grid">
+                <input type="text" id="deviceName" placeholder="Cihaz Adı (Örn: Yazıcı)" required>
+                <select id="deviceType">
+                    <option value="Bilgisayar">Bilgisayar</option>
+                    <option value="Yazıcı">Yazıcı</option>
+                    <option value="Ağ Cihazı">Ağ Cihazı</option>
+                </select>
+                <select id="priority">
+                    <option value="DÜŞÜK">Düşük Öncelik</option>
+                    <option value="ORTA" selected>Orta Öncelik</option>
+                    <option value="YÜKSEK">Yüksek Öncelik</option>
+                </select>
+                <textarea id="description" placeholder="Arıza detaylarını yazın..." required></textarea>
+                <button type="submit" class="submit-btn">ARIZA KAYDI OLUŞTUR</button>
             </div>
+        </form>
     </div>
 
-    <script>
-        const user = JSON.parse(localStorage.getItem('user'));
-        if (!user) window.location.href = 'index.html';
+    <h3>📋 <span id="listTitle">Arıza Kayıtları</span></h3>
+    <div id="faultList" class="fault-list">
+        <p>Yükleniyor...</p>
+    </div>
+</div>
 
-        document.getElementById('userName').innerText = `${user.firstName} (${user.role})`;
+<script>
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user) window.location.href = 'index.html';
 
-        // Rol Kontrolü (Gereksinim 2)
-        if (user.role === 'DEPARTMAN') {
-            document.getElementById('createFaultCard').style.display = 'block';
-        }
+    document.getElementById('userInfo').innerText = `${user.firstName} (${user.role})`;
 
-        function logout() {
-            localStorage.clear();
-            window.location.href = 'index.html';
-        }
+    // Rol Bazlı Arayüz (Gereksinim 2)
+    if (user.role === 'DEPARTMAN') {
+        document.getElementById('personelForm').style.display = 'block';
+        document.getElementById('listTitle').innerText = 'Arıza Geçmişim';
+    } else {
+        document.getElementById('listTitle').innerText = 'Tüm Departman Arızaları (Yönetici)';
+    }
 
-        // --- ARIZA KAYDI GÖNDERME (Gereksinim 3) ---
-        document.getElementById('faultForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const faultData = {
-                deviceName: document.getElementById('deviceName').value,
-                deviceType: document.getElementById('deviceType').value,
-                description: document.getElementById('description').value,
-                priority: document.getElementById('priority').value,
-                userId: user.id
-            };
+    function logout() {
+        localStorage.clear();
+        window.location.href = 'index.html';
+    }
 
-            const res = await fetch('/faults', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(faultData)
-            });
+    // Arıza Kaydı Oluşturma
+    document.getElementById('faultForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = {
+            deviceName: document.getElementById('deviceName').value,
+            deviceType: document.getElementById('deviceType').value,
+            description: document.getElementById('description').value,
+            priority: document.getElementById('priority').value,
+            userId: user.id
+        };
 
-            if (res.ok) {
-                alert('Arıza kaydı başarıyla oluşturuldu!');
-                location.reload(); // Sayfayı yenile ki yeni kayıt listede görünsün
-            }
+        const res = await fetch('/faults', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
         });
-    </script>
+
+        if (res.ok) {
+            alert('Kayıt oluşturuldu!');
+            location.reload();
+        }
+    });
+
+    // Listeleme (Gereksinim 6 & 8)
+    async function loadFaults() {
+        // Personel ise sadece kendi ID'sini, Admin ise hepsini çeker
+        const url = user.role === 'ADMIN' ? '/faults' : `/faults/user/${user.id}`;
+        const res = await fetch(url);
+        const faults = await res.json();
+        
+        const listDiv = document.getElementById('faultList');
+        listDiv.innerHTML = faults.length === 0 ? '<p>Kayıt bulunamadı.</p>' : '';
+
+        faults.forEach(f => {
+            const div = document.createElement('div');
+            div.className = `fault-item priority-${f.priority}`;
+            div.innerHTML = `
+                <span class="status-badge badge-beklemede">${f.status}</span>
+                <strong>${f.deviceName}</strong> <small>(${f.deviceType})</small>
+                <p>${f.description}</p>
+                <div style="font-size: 0.8rem; color: #666;">ID: #${f.id} | Öncelik: ${f.priority}</div>
+                ${user.role === 'ADMIN' ? `
+                    <div class="admin-controls">
+                        <button onclick="updateStatus(${f.id}, 'İnceleniyor')">⚙️ İncele</button>
+                        <button onclick="updateStatus(${f.id}, 'Tamir Edildi')">✅ Onar</button>
+                    </div>
+                ` : ''}
+            `;
+            listDiv.appendChild(div);
+        });
+    }
+
+    loadFaults();
+</script>
 </body>
 </html>
