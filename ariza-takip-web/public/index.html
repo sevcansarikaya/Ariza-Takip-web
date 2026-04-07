@@ -19,16 +19,16 @@
 <body>
 
     <div class="login-card">
-
+        
         <h2>Sistem Girişi</h2>
         <div class="tabs">
             <button class="tab-btn active" id="btnP" onclick="setRole('DEPARTMAN')">Personel</button>
             <button class="tab-btn" id="btnY" onclick="setRole('ADMIN')">Yetkili</button>
         </div>
         <form id="loginForm">
-            <input type="email" id="email" placeholder="E-posta" required>
-            <input type="password" id="password" placeholder="Şifre" required>
-            <input type="password" id="adminKey" placeholder="Belediye Yetkili Şifresi" style="display: none;">
+            <input type="email" id="email" name="email" placeholder="E-posta" autocomplete="username" required>
+            <input type="password" id="password" name="password" placeholder="Şifre" autocomplete="current-password" required>
+            <input type="password" id="adminKey" name="adminKey" placeholder="Belediye Yetkili Şifresi" style="display: none;">
             <button type="submit" class="main-btn">Giriş Yap</button>
             <a href="register.html" style="margin-top: 15px; display: block; color: #ff7e5f; text-decoration: none; font-size: 0.9rem;">
     Hesabınız yok mu? Kayıt Olun
