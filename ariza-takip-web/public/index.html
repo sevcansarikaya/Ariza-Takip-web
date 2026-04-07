@@ -2,40 +2,153 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Belediye Arıza Takip - Giriş</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --primary-orange: #ff7e5f;
+            --secondary-orange: #feb47b;
+            --dark-grey: #2c3e50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            color: #333;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-card h2 {
+            margin-bottom: 10px;
+            color: var(--dark-grey);
+            font-weight: 800;
+        }
+
+        .login-card p {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--dark-grey);
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-orange);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary-orange);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.3s;
+        }
+
+        button:hover {
+            background: #e66a4e;
+            transform: translateY(-2px);
+        }
+
+        #message {
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: #e74c3c;
+            min-height: 20px;
+        }
+
+        .belediye-logo {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
-    <div class="login-container">
-        <h2>Belediye Arıza Takip Sistemi</h2>
+
+    <div class="login-card">
+        <div class="belediye-logo">🏢</div>
+        <h2>Sistem Girişi</h2>
+        <p>Arıza Takip ve Yönetim Paneli</p>
+        
         <form id="loginForm">
-            <input type="email" id="email" placeholder="E-posta" required>
-            <input type="password" id="password" placeholder="Şifre" required>
+            <div class="form-group">
+                <label>E-posta Adresi</label>
+                <input type="email" id="email" placeholder="isim@belediye.com" required>
+            </div>
+            <div class="form-group">
+                <label>Şifre</label>
+                <input type="password" id="password" placeholder="••••••••" required>
+            </div>
             <button type="submit">Giriş Yap</button>
         </form>
-        <p id="message"></p>
+
+        <div id="message"></div>
     </div>
 
     <script>
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            const messageDiv = document.getElementById('message');
+            messageDiv.innerText = "Giriş yapılıyor...";
+            
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
-            const response = await fetch('/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
+            try {
+                const response = await fetch('/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
 
-            const data = await response.json();
-            if (response.ok) {
-                // Giriş başarılıysa kullanıcı bilgilerini tarayıcıya kaydet
-                localStorage.setItem('user', JSON.stringify(data.user));
-                alert('Giriş başarılı! Yönlendiriliyorsunuz...');
-                window.location.href = 'dashboard.html';
-            } else {
-                document.getElementById('message').innerText = data.error;
+                const data = await response.json();
+                
+                if (response.ok) {
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    window.location.href = 'dashboard.html';
+                } else {
+                    messageDiv.innerText = data.error || "Giriş başarısız.";
+                }
+            } catch (err) {
+                messageDiv.innerText = "Sunucuya bağlanılamadı.";
             }
         });
     </script>
