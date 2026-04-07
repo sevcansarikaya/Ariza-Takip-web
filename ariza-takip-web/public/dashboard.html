@@ -2,60 +2,193 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arıza Takip Paneli</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --primary-orange: #ff7e5f;
+            --dark-blue: #2c3e50;
+            --bg-light: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg-light);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Üst Menü */
+        nav {
+            background: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .user-info { font-weight: bold; color: var(--dark-blue); }
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .container {
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Form Kartı */
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            border-top: 5px solid var(--primary-orange);
+        }
+
+        h3 { color: var(--dark-blue); margin-top: 0; }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        textarea { grid-column: span 2; height: 100px; }
+
+        .submit-btn {
+            grid-column: span 2;
+            background: var(--primary-orange);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .submit-btn:hover { background: #e66a4e; }
+
+        /* Arıza Kartları Listesi */
+        .fault-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .fault-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 8px solid #ddd;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            float: right;
+        }
+
+        .status-beklemede { background: #ffeaa7; color: #d63031; }
+    </style>
 </head>
 <body>
+
     <nav>
-        <span id="welcomeText"></span>
-        <button onclick="logout()">Çıkış Yap</button>
+        <div class="user-info">🏢 Belediye Arıza Takip | <span id="userName">...</span></div>
+        <button class="logout-btn" onclick="logout()">Çıkış Yap</button>
     </nav>
 
     <div class="container">
-        <section id="createFaultSection" style="display: none;">
-            <h3>Yeni Arıza Kaydı Oluştur</h3>
+        <div id="createFaultCard" class="card" style="display: none;">
+            <h3>🛠️ Yeni Arıza Bildirimi</h3>
             <form id="faultForm">
-                <input type="text" id="deviceName" placeholder="Cihaz Adı (Örn: HP Yazıcı)" required>
-                <select id="deviceType">
-                    <option value="Bilgisayar">Bilgisayar</option>
-                    <option value="Yazici">Yazıcı</option>
-                    <option value="Ağ Cihazı">Ağ Cihazı</option>
-                </select>
-                <textarea id="description" placeholder="Arıza Açıklaması"></textarea>
-                <select id="priority">
-                    <option value="DÜŞÜK">Düşük</option>
-                    <option value="ORTA">Orta</option>
-                    <option value="YÜKSEK">Yüksek</option>
-                </select>
-                <button type="submit">Kaydı Gönder</button>
-            </form>
-        </section>
-
-        <section id="listSection">
-            <h3>Arıza Kayıtları</h3>
-            <div id="faultList">
+                <div class="form-grid">
+                    <input type="text" id="deviceName" placeholder="Cihaz Adı (Örn: Masaüstü PC)" required>
+                    <select id="deviceType">
+                        <option value="Bilgisayar">Bilgisayar</option>
+                        <option value="Yazıcı">Yazıcı</option>
+                        <option value="Ağ Cihazı">Ağ Cihazı</option>
+                        <option value="Diğer">Diğer</option>
+                    </select>
+                    <select id="priority">
+                        <option value="DÜŞÜK">Düşük Öncelik</option>
+                        <option value="ORTA" selected>Orta Öncelik</option>
+                        <option value="YÜKSEK">Yüksek Öncelik</option>
+                    </select>
+                    <textarea id="description" placeholder="Arıza detaylarını buraya yazın..." required></textarea>
+                    <button type="submit" class="submit-btn">ARIZA KAYDINI GÖNDER</button>
                 </div>
-        </section>
+            </form>
+        </div>
+
+        <h3>📋 Mevcut Arıza Kayıtları</h3>
+        <div id="faultList" class="fault-grid">
+            </div>
     </div>
 
     <script>
         const user = JSON.parse(localStorage.getItem('user'));
+        if (!user) window.location.href = 'index.html';
 
-        if (!user) {
-            window.location.href = 'index.html';
-        }
+        document.getElementById('userName').innerText = `${user.firstName} (${user.role})`;
 
-        document.getElementById('welcomeText').innerText = `Hoş geldin, ${user.firstName} (${user.role})`;
-
-        // Gereksinim 2: Rol Bazlı Yetkilendirme (Sadece DEPARTMAN kayıt açabilir)
+        // Rol Kontrolü (Gereksinim 2)
         if (user.role === 'DEPARTMAN') {
-            document.getElementById('createFaultSection').style.display = 'block';
+            document.getElementById('createFaultCard').style.display = 'block';
         }
 
         function logout() {
             localStorage.clear();
             window.location.href = 'index.html';
         }
+
+        // --- ARIZA KAYDI GÖNDERME (Gereksinim 3) ---
+        document.getElementById('faultForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const faultData = {
+                deviceName: document.getElementById('deviceName').value,
+                deviceType: document.getElementById('deviceType').value,
+                description: document.getElementById('description').value,
+                priority: document.getElementById('priority').value,
+                userId: user.id
+            };
+
+            const res = await fetch('/faults', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(faultData)
+            });
+
+            if (res.ok) {
+                alert('Arıza kaydı başarıyla oluşturuldu!');
+                location.reload(); // Sayfayı yenile ki yeni kayıt listede görünsün
+            }
+        });
     </script>
 </body>
 </html>
