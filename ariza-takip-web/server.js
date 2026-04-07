@@ -3,6 +3,9 @@ const cors = require('cors');
 const db = require('./database'); // Veritabanı bağlantısı
 require('dotenv').config();
 app.use(express.static('public'));
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/public/index.html');
+});
 const app = express();
 app.use(cors());
 app.use(express.json()); // JSON gövdelerini okumak için şart
@@ -18,7 +21,6 @@ app.get('/', (req, res) => {
 app.post('/auth/register', (req, res) => {
     const { email, password, firstName, lastName, role } = req.body;
 
-    // Basit bir kontrol: Tüm alanlar dolu mu?
     if (!email || !password || !firstName || !lastName || !role) {
         return res.status(400).json({ error: "Lütfen tüm alanları doldurun." });
     }
@@ -28,7 +30,6 @@ app.post('/auth/register', (req, res) => {
 
     db.run(sql, params, function(err) {
         if (err) {
-            // Eğer email zaten varsa SQLite hata döndürür
             return res.status(400).json({ error: "Bu email adresi zaten kayıtlı veya geçersiz veri." });
         }
         res.status(201).json({
