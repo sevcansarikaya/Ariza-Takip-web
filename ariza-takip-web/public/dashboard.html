@@ -257,52 +257,52 @@
     </div>
 
     <script>
-            const user = JSON.parse(localStorage.getItem("user"));
-            if (!user) window.location.href = "index.html";
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (!user) window.location.href = "index.html";
 
-            document.getElementById("userName").innerText =
-              `${user.firstName} (${user.role})`;
+      document.getElementById("userName").innerText =
+        `${user.firstName} (${user.role})`;
 
-            if (user.role === "ADMIN") {
-              document.getElementById("adminStats").style.display = "grid";
-            } else {
-              document.getElementById("personelForm").style.display = "block";
-            }
+      if (user.role === "ADMIN") {
+        document.getElementById("adminStats").style.display = "grid";
+      } else {
+        document.getElementById("personelForm").style.display = "block";
+      }
 
-            let allFaults = [];
+      let allFaults = [];
 
-            async function loadData() {
-              const url =
-                user.role === "ADMIN" ? "/faults" : `/faults/user/${user.id}`;
-              const res = await fetch(url);
-              allFaults = await res.json();
-              if (user.role === "ADMIN") updateStats();
-              renderFaults(allFaults);
-            }
+      async function loadData() {
+        const url =
+          user.role === "ADMIN" ? "/faults" : `/faults/user/${user.id}`;
+        const res = await fetch(url);
+        allFaults = await res.json();
+        if (user.role === "ADMIN") updateStats();
+        renderFaults(allFaults);
+      }
 
-            function updateStats() {
-              document.getElementById("totalCount").innerText = allFaults.length;
-              document.getElementById("pendingCount").innerText = allFaults.filter(
-                (f) => f.status === "Beklemede",
-              ).length;
-              document.getElementById("fixedCount").innerText = allFaults.filter(
-                (f) => f.status === "Tamir Edildi",
-              ).length;
-            }
+      function updateStats() {
+        document.getElementById("totalCount").innerText = allFaults.length;
+        document.getElementById("pendingCount").innerText = allFaults.filter(
+          (f) => f.status === "Beklemede",
+        ).length;
+        document.getElementById("fixedCount").innerText = allFaults.filter(
+          (f) => f.status === "Tamir Edildi",
+        ).length;
+      }
 
-            function renderFaults(data) {
-              const listDiv = document.getElementById("faultList");
-              listDiv.innerHTML = data.length === 0 ? "<p>Kayıt bulunamadı.</p>" : "";
+      function renderFaults(data) {
+        const listDiv = document.getElementById("faultList");
+        listDiv.innerHTML = data.length === 0 ? "<p>Kayıt bulunamadı.</p>" : "";
 
-              data.forEach((f) => {
-                const div = document.createElement("div");
-                div.className = "fault-card";
-                div.style.borderLeftColor =
-                  f.priority === "YÜKSEK" ? "#e74c3c" : "#f1c40f";
+        data.forEach((f) => {
+          const div = document.createElement("div");
+          div.className = "fault-card";
+          div.style.borderLeftColor =
+            f.priority === "YÜKSEK" ? "#e74c3c" : "#f1c40f";
 
-                const statusControl =
-                  user.role === "ADMIN"
-                    ? `
+          const statusControl =
+            user.role === "ADMIN"
+              ? `
                   <select onchange="updateFaultStatus(${f.id}, this.value)" style="width:auto; padding:5px; font-size:0.8rem;">
                       <option value="Beklemede" ${f.status === "Beklemede" ? "selected" : ""}>Beklemede</option>
                       <option value="İnceleniyor" ${f.status === "İnceleniyor" ? "selected" : ""}>İnceleniyor</option>
@@ -310,114 +310,116 @@
                       <option value="Reddedildi" ${f.status === "Reddedildi" ? "selected" : ""}>Reddedildi</option>
                   </select>
               `
-                    : `<span class="badge">${f.status}</span>`;
+              : `<span class="badge">${f.status}</span>`;
 
-                div.innerHTML = `
+          div.innerHTML = `
                   <div style="float:right;">${statusControl}</div>
                   <strong>${f.deviceName}</strong> <small>(${f.deviceType})</small>
                   <p>${f.description}</p>
                   ${f.imageUrl ? `<img src="${f.imageUrl}" style="width:100px; border-radius:8px; margin-top:10px; display:block;">` : ""}
                   <div style="font-size:0.8rem; color:#666; margin-top:10px;">ID: #${f.id} | Öncelik: ${f.priority}</div>
               `;
-                listDiv.appendChild(div);
-              });
-            }
-
-            document
-              .getElementById("faultForm")
-              ?.addEventListener("submit", async (e) => {
-                e.preventDefault();
-
-                const form = e.target;
-                const formData = new FormData();
-                formData.append(
-                  "deviceName",
-                  document.getElementById("deviceName").value,
-                );
-                formData.append(
-                  "deviceType",
-                  document.getElementById("deviceType").value,
-                );
-                formData.append(
-                  "description",
-                  document.getElementById("description").value,
-                );
-                formData.append(
-                  "priority",
-                  document.getElementById("priority").value,
-                );
-                formData.append("userId", user.id);
-
-                const fileInput = document.getElementById("faultImage");
-                if (fileInput.files[0]) {
-                  formData.append("faultImage", fileInput.files[0]);
-                }
-
-                try {
-                  const res = await fetch("/faults", {
-                    method: "POST",
-                    body: formData,
-                  });
-
-                  if (res.ok) {
-                    alert("Arıza kaydı başarıyla oluşturuldu!");
-
-                    form.reset();
-
-                    loadData();
-                  } else {
-                    const errorData = await res.json();
-                    alert("Hata: " + (errorData.error || "Kayıt oluşturulamadı."));
-                  }
-                } catch (err) {
-                  alert("🌐 Sunucuyla bağlantı kurulamadı!");
-                }
-              });
-
-            function filterByStatus(status) {
-              document.getElementById("navPath").innerText = status;
-              renderFaults(
-                status === "Hepsi"
-                  ? allFaults
-                  : allFaults.filter((f) => f.status === status),
-              );
-            }
-
-            function filterByDept(dept) {
-              document.getElementById("navPath").innerText = dept;
-              renderFaults(allFaults.filter((f) => f.deviceType === dept));
-            }
-
-            function logout() {
-              localStorage.clear();
-              window.location.href = "index.html";
-            }
-            async function loadData() {
-          try {
-              const url = user.role === 'ADMIN' ? '/faults' : `/faults/user/${user.id}`;
-
-              const res = await fetch(url);
-              if (!res.ok) throw new Error("Veri çekilemedi");
-
-              allFaults = await res.json();
-
-              console.log("Gelen Arızalar:", allFaults);
-
-              if (user.role === 'ADMIN') updateStats();
-              renderFaults(allFaults);
-          } catch (err) {
-              console.error("Yükleme hatası:", err);
-              document.getElementById('faultList').innerHTML = "Veriler yüklenirken hata oluştu.";
-          }
+          listDiv.appendChild(div);
+        });
       }
 
-              if (res.ok) {
-                alert("Durum güncellendi!");
-                loadData();
-              } else {
-                alert("Güncelleme sırasında bir hata oluştu.");
-              }
-            
+      document
+        .getElementById("faultForm")
+        ?.addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const form = e.target;
+          const formData = new FormData();
+          formData.append(
+            "deviceName",
+            document.getElementById("deviceName").value,
+          );
+          formData.append(
+            "deviceType",
+            document.getElementById("deviceType").value,
+          );
+          formData.append(
+            "description",
+            document.getElementById("description").value,
+          );
+          formData.append(
+            "priority",
+            document.getElementById("priority").value,
+          );
+          formData.append("userId", user.id);
+
+          const fileInput = document.getElementById("faultImage");
+          if (fileInput.files[0]) {
+            formData.append("faultImage", fileInput.files[0]);
+          }
+
+          try {
+            const res = await fetch("/faults", {
+              method: "POST",
+              body: formData,
+            });
+
+            if (res.ok) {
+              alert("Arıza kaydı başarıyla oluşturuldu!");
+
+              form.reset();
+
+              loadData();
+            } else {
+              const errorData = await res.json();
+              alert("Hata: " + (errorData.error || "Kayıt oluşturulamadı."));
+            }
+          } catch (err) {
+            alert("🌐 Sunucuyla bağlantı kurulamadı!");
+          }
+        });
+
+      function filterByStatus(status) {
+        document.getElementById("navPath").innerText = status;
+        renderFaults(
+          status === "Hepsi"
+            ? allFaults
+            : allFaults.filter((f) => f.status === status),
+        );
+      }
+
+      function filterByDept(dept) {
+        document.getElementById("navPath").innerText = dept;
+        renderFaults(allFaults.filter((f) => f.deviceType === dept));
+      }
+
+      function logout() {
+        localStorage.clear();
+        window.location.href = "index.html";
+      }
+      async function loadData() {
+        try {
+          const url =
+            user.role === "ADMIN" ? "/faults" : `/faults/user/${user.id}`;
+
+          const res = await fetch(url);
+          if (!res.ok) throw new Error("Veri çekilemedi");
+
+          allFaults = await res.json();
+
+          console.log("Gelen Arızalar:", allFaults);
+
+          if (user.role === "ADMIN") updateStats();
+          renderFaults(allFaults);
+        } catch (err) {
+          console.error("Yükleme hatası:", err);
+          document.getElementById("faultList").innerHTML =
+            "Veriler yüklenirken hata oluştu.";
+        }
+      }
+
+      if (res.ok) {
+        alert("Durum güncellendi!");
+        loadData();
+      } else {
+        alert("Güncelleme sırasında bir hata oluştu.");
+      }
+      loadData();
     </script>
   </body>
 </html>
