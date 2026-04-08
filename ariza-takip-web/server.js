@@ -4,6 +4,11 @@ const db = require('./database');
 require('dotenv').config();
 
 const app = express();
+const fs = require('fs'); 
+
+if (!fs.existsSync('public/uploads')) {
+    fs.mkdirSync('public/uploads', { recursive: true });
+}
 const multer = require('multer');
 const storage = multer.diskStorage({
     destination: (req, file, cb) => { cb(null, 'public/uploads/'); },
