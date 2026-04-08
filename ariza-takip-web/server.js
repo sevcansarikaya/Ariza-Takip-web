@@ -74,6 +74,37 @@ app.post('/faults', upload.single('faultImage'), (req, res) => {
         res.status(201).json({ message: "Kayıt oluşturuldu" });
     });
 });
+app.get('/faults', (req, res) => {
+    const sql = `SELECT * FROM faults ORDER BY id DESC`;
+    db.all(sql, [], (err, rows) => {
+        if (err) return res.status(500).json({ error: "Veri çekme hatası." });
+        res.status(200).json(rows);
+    });
+});
+
+app.get('/faults/user/:id', (req, res) => {
+    const userId = req.params.id;
+    const sql = `SELECT * FROM faults WHERE userId = ? ORDER BY id DESC`;
+    db.all(sql, [userId], (err, rows) => {
+        if (err) return res.status(500).json({ error: "Veri çekme hatası." });
+        res.status(200).json(rows);
+    });
+});
+
+app.put('/faults/:id/status', (req, res) => {
+    const { status } = req.body;
+    const { id } = req.params;
+    
+    const sql = `UPDATE faults SET status = ? WHERE id = ?`;
+    db.run(sql, [status, id], function(err) {
+        if (err) return res.status(500).json({ error: "Güncelleme hatası." });
+        res.status(200).json({ message: "Durum güncellendi" });
+    });
+});
+
+app.listen(PORT, () => {
+    console.log(` Sunucu ${PORT} portunda aktif.`);
+});
 
 
 app.listen(PORT, () => {
