@@ -75,10 +75,26 @@ app.post('/faults', upload.single('faultImage'), (req, res) => {
     });
 });
 app.get('/faults', (req, res) => {
-    const sql = `SELECT * FROM faults ORDER BY id DESC`;
-    db.all(sql, [], (err, rows) => {
-        if (err) return res.status(500).json({ error: "Veri çekme hatası." });
-        res.status(200).json(rows);
+    const role = req.query.role;
+    const userId = req.query.userId;
+
+    let sql;
+    let params = [];
+
+    if (role === 'ADMIN') {
+        sql = `SELECT * FROM faults ORDER BY id DESC`;
+    } 
+    else if (userId) {
+        sql = `SELECT * FROM faults WHERE userId = ?`;
+        params = [userId];
+    } 
+    else {
+        sql = `SELECT * FROM faults ORDER BY id DESC`;
+    }
+
+    db.all(sql, params, (err, rows) => {
+        if (err) return res.status(500).json({ error: "Veri çekme hatası" });
+        res.json(rows);
     });
 });
 
@@ -102,9 +118,6 @@ app.put('/faults/:id/status', (req, res) => {
     });
 });
 
-app.listen(PORT, () => {
-    console.log(` Sunucu ${PORT} portunda aktif.`);
-});
 
 
 app.listen(PORT, () => {
