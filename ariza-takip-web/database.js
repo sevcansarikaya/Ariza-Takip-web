@@ -2,7 +2,7 @@ const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('./ariza_takip.db');
 
 db.serialize(() => {
-
+    // 1. KULLANICILAR TABLOSU
     db.run(`CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         firstName TEXT,
@@ -12,7 +12,7 @@ db.serialize(() => {
         role TEXT
     )`);
 
-    
+    // 2. ARIZALAR TABLOSU (Hata burada olabilir, bunu dikkatli kopyala)
     db.run(`CREATE TABLE IF NOT EXISTS faults (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         deviceName TEXT,
@@ -21,8 +21,8 @@ db.serialize(() => {
         priority TEXT,
         status TEXT DEFAULT 'Beklemede',
         userId INTEGER,
-        FOREIGN KEY(userId) REFERENCES users(id),
-        imageUrl TEXT
+        imageUrl TEXT,
+        FOREIGN KEY(userId) REFERENCES users(id)
     )`);
 });
 
