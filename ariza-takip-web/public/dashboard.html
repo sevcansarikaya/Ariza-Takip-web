@@ -1,167 +1,401 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Belediye Arıza Takip Paneli</title>
     <style>
-        :root { --orange: #ff7e5f; --dark: #2c3e50; --light: #f4f7f6; --sidebar-w: 260px; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--light); margin: 0; display: flex; }
+      :root {
+        --orange: #ff7e5f;
+        --dark: #2c3e50;
+        --light: #f4f7f6;
+        --sidebar-w: 260px;
+      }
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background: var(--light);
+        margin: 0;
+        display: flex;
+      }
 
-        .sidebar { width: var(--sidebar-w); background: var(--dark); height: 100vh; color: white; position: fixed; z-index: 100; }
-        .sidebar-header { padding: 25px 20px; background: #1a252f; text-align: center; font-weight: bold; border-bottom: 2px solid var(--orange); }
-        .menu-item { padding: 15px 20px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; border-bottom: 1px solid #34495e; }
-        .menu-item:hover { background: var(--orange); }
+      .sidebar {
+        width: var(--sidebar-w);
+        background: var(--dark);
+        height: 100vh;
+        color: white;
+        position: fixed;
+        z-index: 100;
+      }
+      .sidebar-header {
+        padding: 25px 20px;
+        background: #1a252f;
+        text-align: center;
+        font-weight: bold;
+        border-bottom: 2px solid var(--orange);
+      }
+      .menu-item {
+        padding: 15px 20px;
+        cursor: pointer;
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #34495e;
+      }
+      .menu-item:hover {
+        background: var(--orange);
+      }
 
-        .main-content { flex: 1; margin-left: var(--sidebar-w); padding: 25px; min-height: 100vh; width: calc(100% - var(--sidebar-w)); }
-        .top-nav { background: white; padding: 15px 25px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 25px; }
+      .main-content {
+        flex: 1;
+        margin-left: var(--sidebar-w);
+        padding: 25px;
+        min-height: 100vh;
+        width: calc(100% - var(--sidebar-w));
+      }
+      .top-nav {
+        background: white;
+        padding: 15px 25px;
+        border-radius: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        margin-bottom: 25px;
+      }
 
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .stat-card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-bottom: 5px solid var(--orange); cursor: pointer; transition: 0.3s; }
-        .stat-card:hover { transform: translateY(-5px); }
-        .stat-card h4 { margin: 0; color: #7f8c8d; font-size: 0.85rem; }
-        .stat-card .value { font-size: 1.8rem; font-weight: bold; margin-top: 5px; }
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+      .stat-card {
+        background: white;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        border-bottom: 5px solid var(--orange);
+        cursor: pointer;
+        transition: 0.3s;
+      }
+      .stat-card:hover {
+        transform: translateY(-5px);
+      }
+      .stat-card h4 {
+        margin: 0;
+        color: #7f8c8d;
+        font-size: 0.85rem;
+      }
+      .stat-card .value {
+        font-size: 1.8rem;
+        font-weight: bold;
+        margin-top: 5px;
+      }
 
-        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px; border-top: 5px solid var(--orange); }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        textarea { grid-column: span 2; height: 80px; }
-        .file-box { grid-column: span 2; padding: 15px; border: 2px dashed var(--orange); border-radius: 8px; text-align: center; background: #fffaf9; }
-        .submit-btn { grid-column: span 2; background: var(--orange); color: white; border: none; padding: 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+      .card {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        margin-bottom: 30px;
+        border-top: 5px solid var(--orange);
+      }
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-sizing: border-box;
+      }
+      textarea {
+        grid-column: span 2;
+        height: 80px;
+      }
+      .file-box {
+        grid-column: span 2;
+        padding: 15px;
+        border: 2px dashed var(--orange);
+        border-radius: 8px;
+        text-align: center;
+        background: #fffaf9;
+      }
+      .submit-btn {
+        grid-column: span 2;
+        background: var(--orange);
+        color: white;
+        border: none;
+        padding: 15px;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+      }
 
-        .fault-card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 15px; border-left: 8px solid #ddd; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .badge { position: absolute; top: 20px; right: 20px; padding: 5px 10px; border-radius: 5px; font-size: 0.7rem; font-weight: bold; background: #eee; }
+      .fault-card {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        border-left: 8px solid #ddd;
+        position: relative;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+      .badge {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 0.7rem;
+        font-weight: bold;
+        background: #eee;
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <div class="sidebar">
-        <div class="sidebar-header">🏢 BELEDİYE YÖNETİM</div>
-        <div class="menu-item" onclick="filterByStatus('Hepsi')">📊 Genel Bakış</div>
-        <div class="menu-item" onclick="filterByDept('Bilişim')">💻 Bilişim Hizmetleri</div>
-        <div class="menu-item" onclick="filterByDept('Ulaşım')">🚌 Ulaşım Daire</div>
-        <div class="menu-item" onclick="filterByDept('Fen İşleri')">🏗️ Fen İşleri</div>
-        <div class="menu-item" onclick="logout()" style="color:#ff7e5f; margin-top: 20px;">🚪 Çıkış Yap</div>
+      <div class="sidebar-header">🏢 BELEDİYE YÖNETİM</div>
+      <div class="menu-item" onclick="filterByStatus('Hepsi')">
+        📊 Genel Bakış
+      </div>
+      <div class="menu-item" onclick="filterByDept('Bilişim')">
+        💻 Bilişim Hizmetleri
+      </div>
+      <div class="menu-item" onclick="filterByDept('Ulaşım')">
+        🚌 Ulaşım Daire
+      </div>
+      <div class="menu-item" onclick="filterByDept('Fen İşleri')">
+        🏗️ Fen İşleri
+      </div>
+      <div
+        class="menu-item"
+        onclick="logout()"
+        style="color: #ff7e5f; margin-top: 20px"
+      >
+        🚪 Çıkış Yap
+      </div>
     </div>
 
     <div class="main-content">
-        <div class="top-nav">
-            <div><strong>Panel</strong> > <span id="navPath">Dashboard</span></div>
-            <div id="userName" style="font-weight: 600; color: var(--orange);">Yükleniyor...</div>
+      <div class="top-nav">
+        <div><strong>Panel</strong> > <span id="navPath">Dashboard</span></div>
+        <div id="userName" style="font-weight: 600; color: var(--orange)">
+          Yükleniyor...
         </div>
+      </div>
 
-        <div id="adminStats" class="stats-grid" style="display: none;">
-            <div class="stat-card" onclick="filterByStatus('Hepsi')"><h4>Toplam Arıza</h4><div class="value" id="totalCount">0</div></div>
-            <div class="stat-card" onclick="filterByStatus('Beklemede')" style="border-color: #f1c40f;"><h4>Bekleyen</h4><div class="value" id="pendingCount">0</div></div>
-            <div class="stat-card" onclick="filterByStatus('Tamir Edildi')" style="border-color: #2ecc71;"><h4>Onarılan</h4><div class="value" id="fixedCount">0</div></div>
+      <div id="adminStats" class="stats-grid" style="display: none">
+        <div class="stat-card" onclick="filterByStatus('Hepsi')">
+          <h4>Toplam Arıza</h4>
+          <div class="value" id="totalCount">0</div>
         </div>
-
-        <div id="personelForm" class="card" style="display: none;">
-            <h3>🛠️ Yeni Arıza Kaydı</h3>
-            <form id="faultForm">
-                <div class="form-grid">
-                    <input type="text" id="deviceName" placeholder="Cihaz Adı (Örn: Masaüstü PC)" required>
-                    <select id="deviceType">
-                        <option value="Bilişim">Bilişim Hizmetleri</option>
-                        <option value="Ulaşım">Ulaşım Daire</option>
-                        <option value="Fen İşleri">Fen İşleri</option>
-                        <option value="Temizlik">Temizlik İşleri</option>
-                    </select>
-                    <select id="priority">
-                        <option value="DÜŞÜK">Düşük Öncelik</option>
-                        <option value="ORTA" selected>Orta Öncelik</option>
-                        <option value="YÜKSEK">Yüksek Öncelik</option>
-                    </select>
-                    <textarea id="description" placeholder="Sorunu detaylandırın..." required></textarea>
-                    
-                    <div class="file-box">
-                        <label style="display:block; margin-bottom:5px; font-weight:bold;">📸 Fotoğraf Yükle (Gereksinim 4)</label>
-                        <input type="file" id="faultImage" accept="image/*">
-                    </div>
-                    
-                    <button type="submit" class="submit-btn">ARIZA KAYDINI OLUŞTUR</button>
-                </div>
-            </form>
+        <div
+          class="stat-card"
+          onclick="filterByStatus('Beklemede')"
+          style="border-color: #f1c40f"
+        >
+          <h4>Bekleyen</h4>
+          <div class="value" id="pendingCount">0</div>
         </div>
+        <div
+          class="stat-card"
+          onclick="filterByStatus('Tamir Edildi')"
+          style="border-color: #2ecc71"
+        >
+          <h4>Onarılan</h4>
+          <div class="value" id="fixedCount">0</div>
+        </div>
+      </div>
 
-        <h3 id="listTitle">Arıza Kayıtları</h3>
-        <div id="faultList">Yükleniyor...</div>
+      <div id="personelForm" class="card" style="display: none">
+        <h3>🛠️ Yeni Arıza Kaydı</h3>
+        <form id="faultForm">
+          <div class="form-grid">
+            <input
+              type="text"
+              id="deviceName"
+              placeholder="Cihaz Adı (Örn: Masaüstü PC)"
+              required
+            />
+            <select id="deviceType">
+              <option value="Bilişim">Bilişim Hizmetleri</option>
+              <option value="Ulaşım">Ulaşım Daire</option>
+              <option value="Fen İşleri">Fen İşleri</option>
+              <option value="Temizlik">Temizlik İşleri</option>
+            </select>
+            <select id="priority">
+              <option value="DÜŞÜK">Düşük Öncelik</option>
+              <option value="ORTA" selected>Orta Öncelik</option>
+              <option value="YÜKSEK">Yüksek Öncelik</option>
+            </select>
+            <textarea
+              id="description"
+              placeholder="Sorunu detaylandırın..."
+              required
+            ></textarea>
+
+            <div class="file-box">
+              <label
+                style="display: block; margin-bottom: 5px; font-weight: bold"
+                >📸 Fotoğraf Yükle (Gereksinim 4)</label
+              >
+              <input type="file" id="faultImage" accept="image/*" />
+            </div>
+
+            <button type="submit" class="submit-btn">
+              ARIZA KAYDINI OLUŞTUR
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <h3 id="listTitle">Arıza Kayıtları</h3>
+      <div id="faultList">Yükleniyor...</div>
     </div>
 
     <script>
-        const user = JSON.parse(localStorage.getItem('user'));
-        if (!user) window.location.href = 'index.html';
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (!user) window.location.href = "index.html";
 
-        document.getElementById('userName').innerText = `${user.firstName} (${user.role})`;
-        
-        if (user.role === 'ADMIN') {
-            document.getElementById('adminStats').style.display = 'grid';
-        } else {
-            document.getElementById('personelForm').style.display = 'block';
-        }
+      document.getElementById("userName").innerText =
+        `${user.firstName} (${user.role})`;
 
-        let allFaults = [];
+      if (user.role === "ADMIN") {
+        document.getElementById("adminStats").style.display = "grid";
+      } else {
+        document.getElementById("personelForm").style.display = "block";
+      }
 
-        async function loadData() {
-            const url = user.role === 'ADMIN' ? '/faults' : `/faults/user/${user.id}`;
-            const res = await fetch(url);
-            allFaults = await res.json();
-            if (user.role === 'ADMIN') updateStats();
-            renderFaults(allFaults);
-        }
+      let allFaults = [];
 
-        function updateStats() {
-            document.getElementById('totalCount').innerText = allFaults.length;
-            document.getElementById('pendingCount').innerText = allFaults.filter(f => f.status === 'Beklemede').length;
-            document.getElementById('fixedCount').innerText = allFaults.filter(f => f.status === 'Tamir Edildi').length;
-        }
+      async function loadData() {
+        const url =
+          user.role === "ADMIN" ? "/faults" : `/faults/user/${user.id}`;
+        const res = await fetch(url);
+        allFaults = await res.json();
+        if (user.role === "ADMIN") updateStats();
+        renderFaults(allFaults);
+      }
 
-        function renderFaults(data) {
-            const listDiv = document.getElementById('faultList');
-            listDiv.innerHTML = data.length === 0 ? '<p>Kayıt bulunamadı.</p>' : '';
-            data.forEach(f => {
-                const div = document.createElement('div');
-                div.className = 'fault-card';
-                div.style.borderLeftColor = f.priority === 'YÜKSEK' ? '#e74c3c' : '#f1c40f';
-                div.innerHTML = `
-                    <span class="badge">${f.status}</span>
-                    <strong>${f.deviceName}</strong> <small>(${f.deviceType})</small>
-                    <p>${f.description}</p>
-                    ${f.imageUrl ? `<img src="${f.imageUrl}" style="width:120px; border-radius:8px; margin-top:10px; display:block;">` : ''}
-                    <div style="font-size:0.8rem; color:#666; margin-top:10px;">ID: #${f.id} | Öncelik: ${f.priority}</div>
-                `;
-                listDiv.appendChild(div);
-            });
-        }
+      function updateStats() {
+        document.getElementById("totalCount").innerText = allFaults.length;
+        document.getElementById("pendingCount").innerText = allFaults.filter(
+          (f) => f.status === "Beklemede",
+        ).length;
+        document.getElementById("fixedCount").innerText = allFaults.filter(
+          (f) => f.status === "Tamir Edildi",
+        ).length;
+      }
 
-        document.getElementById('faultForm')?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData();
-            formData.append('deviceName', document.getElementById('deviceName').value);
-            formData.append('deviceType', document.getElementById('deviceType').value);
-            formData.append('description', document.getElementById('description').value);
-            formData.append('priority', document.getElementById('priority').value);
-            formData.append('userId', user.id);
-            
-            const fileInput = document.getElementById('faultImage');
-            if (fileInput.files[0]) formData.append('faultImage', fileInput.files[0]);
+      function renderFaults(data) {
+        const listDiv = document.getElementById("faultList");
+        listDiv.innerHTML = data.length === 0 ? "<p>Kayıt bulunamadı.</p>" : "";
 
-            const res = await fetch('/faults', { method: 'POST', body: formData });
-            if (res.ok) { alert('Başarıyla oluşturuldu!'); location.reload(); }
+        data.forEach((f) => {
+          const div = document.createElement("div");
+          div.className = "fault-card";
+          div.style.borderLeftColor =
+            f.priority === "YÜKSEK" ? "#e74c3c" : "#f1c40f";
+
+          const statusControl =
+            user.role === "ADMIN"
+              ? `
+            <select onchange="updateFaultStatus(${f.id}, this.value)" style="width:auto; padding:5px; font-size:0.8rem;">
+                <option value="Beklemede" ${f.status === "Beklemede" ? "selected" : ""}>Beklemede</option>
+                <option value="İnceleniyor" ${f.status === "İnceleniyor" ? "selected" : ""}>İnceleniyor</option>
+                <option value="Tamir Edildi" ${f.status === "Tamir Edildi" ? "selected" : ""}>Tamir Edildi</option>
+                <option value="Reddedildi" ${f.status === "Reddedildi" ? "selected" : ""}>Reddedildi</option>
+            </select>
+        `
+              : `<span class="badge">${f.status}</span>`;
+
+          div.innerHTML = `
+            <div style="float:right;">${statusControl}</div>
+            <strong>${f.deviceName}</strong> <small>(${f.deviceType})</small>
+            <p>${f.description}</p>
+            ${f.imageUrl ? `<img src="${f.imageUrl}" style="width:100px; border-radius:8px; margin-top:10px; display:block;">` : ""}
+            <div style="font-size:0.8rem; color:#666; margin-top:10px;">ID: #${f.id} | Öncelik: ${f.priority}</div>
+        `;
+          listDiv.appendChild(div);
+        });
+      }
+
+      document
+        .getElementById("faultForm")
+        ?.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const formData = new FormData();
+          formData.append(
+            "deviceName",
+            document.getElementById("deviceName").value,
+          );
+          formData.append(
+            "deviceType",
+            document.getElementById("deviceType").value,
+          );
+          formData.append(
+            "description",
+            document.getElementById("description").value,
+          );
+          formData.append(
+            "priority",
+            document.getElementById("priority").value,
+          );
+          formData.append("userId", user.id);
+
+          const fileInput = document.getElementById("faultImage");
+          if (fileInput.files[0])
+            formData.append("faultImage", fileInput.files[0]);
+
+          const res = await fetch("/faults", {
+            method: "POST",
+            body: formData,
+          });
+          if (res.ok) {
+            alert("Başarıyla oluşturuldu!");
+            location.reload();
+          }
         });
 
-        function filterByStatus(status) {
-            document.getElementById('navPath').innerText = status;
-            renderFaults(status === 'Hepsi' ? allFaults : allFaults.filter(f => f.status === status));
-        }
+      function filterByStatus(status) {
+        document.getElementById("navPath").innerText = status;
+        renderFaults(
+          status === "Hepsi"
+            ? allFaults
+            : allFaults.filter((f) => f.status === status),
+        );
+      }
 
-        function filterByDept(dept) {
-            document.getElementById('navPath').innerText = dept;
-            renderFaults(allFaults.filter(f => f.deviceType === dept));
-        }
+      function filterByDept(dept) {
+        document.getElementById("navPath").innerText = dept;
+        renderFaults(allFaults.filter((f) => f.deviceType === dept));
+      }
 
-        function logout() { localStorage.clear(); window.location.href = 'index.html'; }
-        loadData();
+      function logout() {
+        localStorage.clear();
+        window.location.href = "index.html";
+      }
+      loadData();
+      async function updateFaultStatus(faultId, newStatus) {
+        const res = await fetch(`/faults/${faultId}/status`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status: newStatus }),
+        });
+
+        if (res.ok) {
+          alert("Durum güncellendi!");
+          loadData();
+        } else {
+          alert("Güncelleme sırasında bir hata oluştu.");
+        }
+      }
     </script>
-</body>
+  </body>
 </html>

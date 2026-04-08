@@ -1,88 +1,176 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
-<head>
-
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
 
     <title>Belediye Arıza Takip - Giriş</title>
     <style>
-        :root { --orange: #ff7e5f; --dark: #2c3e50; }
-        body { font-family: sans-serif; background: linear-gradient(135deg, #ff7e5f, #feb47b); height: 100vh; display: flex; justify-content: center; align-items: center; margin: 0; }
-        .login-card { background: white; padding: 30px; border-radius: 12px; width: 350px; text-align: center; }
-        .tabs { display: flex; margin-bottom: 20px; background: #eee; border-radius: 8px; padding: 5px; }
-        .tab-btn { flex: 1; border: none; padding: 10px; cursor: pointer; border-radius: 6px; font-weight: bold; background: none; }
-        .tab-btn.active { background: var(--orange); color: white; }
-        input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        button.main-btn { width: 100%; padding: 12px; background: var(--orange); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+      :root {
+        --orange: #ff7e5f;
+        --dark: #2c3e50;
+      }
+      body {
+        font-family: sans-serif;
+        background: linear-gradient(135deg, #ff7e5f, #feb47b);
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+      }
+      .login-card {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        width: 350px;
+        text-align: center;
+      }
+      .tabs {
+        display: flex;
+        margin-bottom: 20px;
+        background: #eee;
+        border-radius: 8px;
+        padding: 5px;
+      }
+      .tab-btn {
+        flex: 1;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+        border-radius: 6px;
+        font-weight: bold;
+        background: none;
+      }
+      .tab-btn.active {
+        background: var(--orange);
+        color: white;
+      }
+      input {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-sizing: border-box;
+      }
+      button.main-btn {
+        width: 100%;
+        padding: 12px;
+        background: var(--orange);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <div class="login-card">
-        
-        <h2>Sistem Girişi</h2>
-        <div class="tabs">
-            <button class="tab-btn active" id="btnP" onclick="setRole('DEPARTMAN')">Personel</button>
-            <button class="tab-btn" id="btnY" onclick="setRole('ADMIN')">Yetkili</button>
-        </div>
-        <form id="loginForm">
-            <input type="email" id="email" name="email" placeholder="E-posta" autocomplete="username" required>
-            <input type="password" id="password" name="password" placeholder="Şifre" autocomplete="current-password" required>
-            <input type="password" id="adminKey" name="adminKey" placeholder="Belediye Yetkili Şifresi" style="display: none;">
-            <button type="submit" class="main-btn">Giriş Yap</button>
-            <a href="register.html" style="margin-top: 15px; display: block; color: #ff7e5f; text-decoration: none; font-size: 0.9rem;">
-    Hesabınız yok mu? Kayıt Olun
-</a>
-        </form>
-        <p id="msg" style="color: red;"></p>
+      <h2>Sistem Girişi</h2>
+      <div class="tabs">
+        <button class="tab-btn active" id="btnP" onclick="setRole('DEPARTMAN')">
+          Personel
+        </button>
+        <button class="tab-btn" id="btnY" onclick="setRole('ADMIN')">
+          Yetkili
+        </button>
+      </div>
+      <form id="loginForm">
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="E-posta"
+          autocomplete="username"
+          required
+        />
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Şifre"
+          autocomplete="current-password"
+          required
+        />
+        <input
+          type="password"
+          id="adminKey"
+          name="adminKey"
+          placeholder="Belediye Yetkili Şifresi"
+          style="display: none"
+        />
+        <button type="submit" class="main-btn">Giriş Yap</button>
+        <a
+          href="register.html"
+          style="
+            margin-top: 15px;
+            display: block;
+            color: #ff7e5f;
+            text-decoration: none;
+            font-size: 0.9rem;
+          "
+        >
+          Hesabınız yok mu? Kayıt Olun
+        </a>
+      </form>
+      <p id="msg" style="color: red"></p>
     </div>
 
     <script>
-    let currentRole = 'DEPARTMAN';
-    
-    function setRole(role) {
+      let currentRole = "DEPARTMAN";
+
+      function setRole(role) {
         currentRole = role;
-        document.getElementById('btnP').classList.toggle('active', role === 'DEPARTMAN');
-        document.getElementById('btnY').classList.toggle('active', role === 'ADMIN');
+        document
+          .getElementById("btnP")
+          .classList.toggle("active", role === "DEPARTMAN");
+        document
+          .getElementById("btnY")
+          .classList.toggle("active", role === "ADMIN");
         // Admin seçilince şifre kutusunu göster, personel seçilince gizle ve içeriğini temizle
-        const adminInput = document.getElementById('adminKey');
-        adminInput.style.display = role === 'ADMIN' ? 'block' : 'none';
-        if(role !== 'ADMIN') adminInput.value = ''; 
-    }
+        const adminInput = document.getElementById("adminKey");
+        adminInput.style.display = role === "ADMIN" ? "block" : "none";
+        if (role !== "ADMIN") adminInput.value = "";
+      }
 
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
 
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        const adminKey = document.getElementById('adminKey').value;
+          const email = document.getElementById("email").value;
+          const password = document.getElementById("password").value;
+          const adminKey = document.getElementById("adminKey").value;
 
-        try {
-            const res = await fetch('/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    email: email, 
-                    password: password, 
-                    role: currentRole, // DEPARTMAN veya ADMIN
-                    adminKey: adminKey 
-                })
+          try {
+            const res = await fetch("/auth/login", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                email: email,
+                password: password,
+                role: currentRole, // DEPARTMAN veya ADMIN
+                adminKey: adminKey,
+              }),
             });
 
             const data = await res.json();
 
             if (res.ok) {
-                // DASHBOARD'un seni tanıması için burası HAYATİ ÖNEMDE
-                localStorage.setItem('user', JSON.stringify(data.user));
-                window.location.href = 'dashboard.html';
+              // DASHBOARD'un seni tanıması için burası HAYATİ ÖNEMDE
+              localStorage.setItem("user", JSON.stringify(data.user));
+              window.location.href = "dashboard.html";
             } else {
-                // Hatayı ekrana yazdır
-                document.getElementById('msg').innerText = data.error || "Giriş başarısız";
+              // Hatayı ekrana yazdır
+              document.getElementById("msg").innerText =
+                data.error || "Giriş başarısız";
             }
-        } catch (err) {
-            document.getElementById('msg').innerText = "Sunucuya bağlanılamadı!";
-        }
-    });
+          } catch (err) {
+            document.getElementById("msg").innerText =
+              "Sunucuya bağlanılamadı!";
+          }
+        });
     </script>
-</body>
+  </body>
 </html>

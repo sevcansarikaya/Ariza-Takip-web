@@ -1,83 +1,161 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Sisteme Kayıt Ol</title>
     <style>
-        :root { --orange: #ff7e5f; --dark: #2c3e50; }
-        body { font-family: sans-serif; background: linear-gradient(135deg, #ff7e5f, #feb47b); height: 100vh; display: flex; justify-content: center; align-items: center; margin: 0; }
-        .card { background: white; padding: 30px; border-radius: 12px; width: 400px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .tabs { display: flex; margin-bottom: 15px; background: #eee; border-radius: 8px; padding: 5px; }
-        .tab-btn { flex: 1; border: none; padding: 10px; cursor: pointer; border-radius: 6px; font-weight: bold; background: none; }
-        .tab-btn.active { background: var(--orange); color: white; }
-        input, select { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        button.main-btn { width: 100%; padding: 12px; background: var(--orange); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .link { margin-top: 15px; display: block; color: var(--orange); text-decoration: none; font-size: 0.9rem; }
+      :root {
+        --orange: #ff7e5f;
+        --dark: #2c3e50;
+      }
+      body {
+        font-family: sans-serif;
+        background: linear-gradient(135deg, #ff7e5f, #feb47b);
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+      }
+      .card {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        width: 400px;
+        text-align: center;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      }
+      .tabs {
+        display: flex;
+        margin-bottom: 15px;
+        background: #eee;
+        border-radius: 8px;
+        padding: 5px;
+      }
+      .tab-btn {
+        flex: 1;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+        border-radius: 6px;
+        font-weight: bold;
+        background: none;
+      }
+      .tab-btn.active {
+        background: var(--orange);
+        color: white;
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-sizing: border-box;
+      }
+      button.main-btn {
+        width: 100%;
+        padding: 12px;
+        background: var(--orange);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .link {
+        margin-top: 15px;
+        display: block;
+        color: var(--orange);
+        text-decoration: none;
+        font-size: 0.9rem;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="card">
-        <h2>Sisteme Kayıt</h2>
-        <div class="tabs">
-            <button class="tab-btn active" id="pBtn" onclick="setRegRole('DEPARTMAN')">Personel</button>
-            <button class="tab-btn" id="yBtn" onclick="setRegRole('ADMIN')">Yetkili</button>
-        </div>
-        <form id="regForm">
-            <input type="text" id="firstName" placeholder="Adınız" required>
-            <input type="text" id="lastName" placeholder="Soyadınız" required>
-            <input type="email" id="email" placeholder="E-posta" required>
-            <input type="password" id="password" placeholder="Şifre" required>
-            
-            <div id="adminAuth" style="display: none;">
-                <input type="password" id="adminRegCode" placeholder="Belediye Kayıt Yetki Kodu">
-            </div>
+      <h2>Sisteme Kayıt</h2>
+      <div class="tabs">
+        <button
+          class="tab-btn active"
+          id="pBtn"
+          onclick="setRegRole('DEPARTMAN')"
+        >
+          Personel
+        </button>
+        <button class="tab-btn" id="yBtn" onclick="setRegRole('ADMIN')">
+          Yetkili
+        </button>
+      </div>
+      <form id="regForm">
+        <input type="text" id="firstName" placeholder="Adınız" required />
+        <input type="text" id="lastName" placeholder="Soyadınız" required />
+        <input type="email" id="email" placeholder="E-posta" required />
+        <input type="password" id="password" placeholder="Şifre" required />
 
-            <button type="submit" class="main-btn">Kayıt Ol</button>
-        </form>
-        <a href="index.html" class="link">Zaten hesabım var, Giriş Yap</a>
-        <p id="msg" style="color: red;"></p>
+        <div id="adminAuth" style="display: none">
+          <input
+            type="password"
+            id="adminRegCode"
+            placeholder="Belediye Kayıt Yetki Kodu"
+          />
+        </div>
+
+        <button type="submit" class="main-btn">Kayıt Ol</button>
+      </form>
+      <a href="index.html" class="link">Zaten hesabım var, Giriş Yap</a>
+      <p id="msg" style="color: red"></p>
     </div>
 
     <script>
-        let regRole = 'DEPARTMAN';
-        function setRegRole(role) {
-            regRole = role;
-            document.getElementById('pBtn').classList.toggle('active', role === 'DEPARTMAN');
-            document.getElementById('yBtn').classList.toggle('active', role === 'ADMIN');
-            document.getElementById('adminAuth').style.display = role === 'ADMIN' ? 'block' : 'none';
-        }
+      let regRole = "DEPARTMAN";
+      function setRegRole(role) {
+        regRole = role;
+        document
+          .getElementById("pBtn")
+          .classList.toggle("active", role === "DEPARTMAN");
+        document
+          .getElementById("yBtn")
+          .classList.toggle("active", role === "ADMIN");
+        document.getElementById("adminAuth").style.display =
+          role === "ADMIN" ? "block" : "none";
+      }
 
-        document.getElementById('regForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const adminCode = document.getElementById('adminRegCode').value;
+      document
+        .getElementById("regForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const adminCode = document.getElementById("adminRegCode").value;
 
-            // Admin kaydı için güvenlik kontrolü
-            if (regRole === 'ADMIN' && adminCode !== 'BELEDIYE123') {
-                alert('Yetki kodu hatalı!'); return;
-            }
+          // Admin kaydı için güvenlik kontrolü
+          if (regRole === "ADMIN" && adminCode !== "BELEDIYE123") {
+            alert("Yetki kodu hatalı!");
+            return;
+          }
 
-            const payload = {
-                firstName: document.getElementById('firstName').value,
-                lastName: document.getElementById('lastName').value,
-                email: document.getElementById('email').value,
-                password: document.getElementById('password').value,
-                role: regRole
-            };
+          const payload = {
+            firstName: document.getElementById("firstName").value,
+            lastName: document.getElementById("lastName").value,
+            email: document.getElementById("email").value,
+            password: document.getElementById("password").value,
+            role: regRole,
+          };
 
-            const res = await fetch('/auth/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
+          const res = await fetch("/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
 
-            if (res.ok) {
-                alert('Kayıt başarılı! Şimdi giriş yapabilirsiniz.');
-                window.location.href = 'index.html';
-            } else {
-                const err = await res.json();
-                document.getElementById('msg').innerText = err.error;
-            }
+          if (res.ok) {
+            alert("Kayıt başarılı! Şimdi giriş yapabilirsiniz.");
+            window.location.href = "index.html";
+          } else {
+            const err = await res.json();
+            document.getElementById("msg").innerText = err.error;
+          }
         });
     </script>
-</body>
+  </body>
 </html>
