@@ -160,18 +160,14 @@
   </head>
   <body>
     <div class="sidebar">
-      <div class="sidebar-header">🏢 BELEDİYE YÖNETİM</div>
-      <div class="menu-item" onclick="filterByStatus('Hepsi')">
-        📊 Genel Bakış
-      </div>
+      <div class="sidebar-header">BELEDİYE YÖNETİM</div>
+      <div class="menu-item" onclick="filterByStatus('Hepsi')">Genel Bakış</div>
       <div class="menu-item" onclick="filterByDept('Bilişim')">
-        💻 Bilişim Hizmetleri
+        Bilişim Hizmetleri
       </div>
-      <div class="menu-item" onclick="filterByDept('Ulaşım')">
-        🚌 Ulaşım Daire
-      </div>
+      <div class="menu-item" onclick="filterByDept('Ulaşım')">Ulaşım Daire</div>
       <div class="menu-item" onclick="filterByDept('Fen İşleri')">
-        🏗️ Fen İşleri
+        Fen İşleri
       </div>
       <div
         class="menu-item"
@@ -243,8 +239,9 @@
             <div class="file-box">
               <label
                 style="display: block; margin-bottom: 5px; font-weight: bold"
-                >📸 Fotoğraf Yükle (Gereksinim 4)</label
               >
+                Fotoğraf Yükle
+              </label>
               <input type="file" id="faultImage" accept="image/*" />
             </div>
 
@@ -330,6 +327,8 @@
         .getElementById("faultForm")
         ?.addEventListener("submit", async (e) => {
           e.preventDefault();
+
+          const form = e.target; 
           const formData = new FormData();
           formData.append(
             "deviceName",
@@ -350,19 +349,31 @@
           formData.append("userId", user.id);
 
           const fileInput = document.getElementById("faultImage");
-          if (fileInput.files[0])
+          if (fileInput.files[0]) {
             formData.append("faultImage", fileInput.files[0]);
+          }
 
-          const res = await fetch("/faults", {
-            method: "POST",
-            body: formData,
-          });
-          if (res.ok) {
-            alert("Başarıyla oluşturuldu!");
-            location.reload();
+          try {
+            const res = await fetch("/faults", {
+              method: "POST",
+              body: formData,
+            });
+
+            if (res.ok) {
+              alert("Arıza kaydı başarıyla oluşturuldu!");
+
+              form.reset();
+
+              loadData();
+            } else {
+              const errorData = await res.json();
+              alert("Hata: " + (errorData.error || "Kayıt oluşturulamadı."));
+            }
+          } catch (err) {
+            alert("🌐 Sunucuyla bağlantı kurulamadı!");
           }
         });
-
+        
       function filterByStatus(status) {
         document.getElementById("navPath").innerText = status;
         renderFaults(
