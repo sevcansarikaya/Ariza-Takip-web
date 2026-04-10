@@ -51,7 +51,7 @@ app.post("/auth/login", (req, res) => {
   if (role === "ADMIN" && adminKey !== "BELEDIYE123") {
     return res.status(403).json({ error: "Admin anahtarı hatalı!" });
   }
-  
+
   const sql = `SELECT * FROM users WHERE email = ? AND password = ? AND role = ?`;
   db.get(sql, [email, password, role], (err, user) => {
     if (err || !user) return res.status(401).json({ error: "Giriş bilgileri hatalı." });
@@ -60,12 +60,12 @@ app.post("/auth/login", (req, res) => {
 });
 
 
-app.post("/faults", upload.single("faultImage"), (req, res) => {
+app.post("/faults", (req, res) => {
   const { deviceName, deviceType, description, priority, userId } = req.body;
   const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
 
-  if (!userId) return res.status(400).json({ error: "userId eksik! Giriş yaptığınızdan emin olun." });
 
+  
   const sql = `INSERT INTO faults (deviceName, deviceType, description, priority, userId, status, imageUrl) VALUES (?, ?, ?, ?, ?, 'Beklemede', ?)`;
   db.run(sql, [deviceName, deviceType, description, priority, userId, imageUrl], function (err) {
     if (err) return res.status(500).json({ error: "Veritabanı kayıt hatası." });
