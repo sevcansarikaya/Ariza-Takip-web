@@ -76,19 +76,24 @@ app.post("/auth/login", (req, res) => {
   });
 });
 
-app.post("/faults", upload.single("faultimage"), (req, res) => {
+app.post("/faults", upload.any(), (req, res) => {
+  console.log("Files:", req.files);
+  console.log("Body:", req.body);
+
   const { deviceName, deviceType, description, priority, userId } = req.body;
-  const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
+  
+  const file = req.files ? req.files[0] : null;
+  const imageUrl = file ? `/uploads/${file.filename}` : null;
 
   const sql = `INSERT INTO faults (deviceName, deviceType, description, priority, userId, status, imageUrl) VALUES (?, ?, ?, ?, ?, 'Beklemede', ?)`;
-  db.run(
-    sql,
-    [deviceName, deviceType, description, priority, userId, imageUrl],
-    function (err) {
-      if (err) return res.status(400).json({ error: "Kayıt hatası." });
-      res.status(201).json({ message: "Kayıt oluşturuldu" });
-    },
-  );
+  
+  db.run(sql, [deviceName, deviceType, description, priority, userId, imageUrl], function (err) {
+    if (err) {
+      console.error("SQL Hatası:", err.message);
+      return res.status(500).json({ error: "Veritabanı kayıt hatası." });
+    }
+    res.status(201).json({ message: "Arıza kaydı başarıyla oluşturuldu." });
+  });
 });
 
 app.get("/faults", (req, res) => {
