@@ -76,7 +76,7 @@ app.post("/auth/login", (req, res) => {
   });
 });
 
-app.post("/faults", upload.single("faultImage"), (req, res) => {
+app.post("/faults", upload.single("faultimage"), (req, res) => {
   const { deviceName, deviceType, description, priority, userId } = req.body;
   const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
 
